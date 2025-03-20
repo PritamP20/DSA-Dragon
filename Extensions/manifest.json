@@ -1,17 +1,26 @@
 {
   "manifest_version": 3,
-  "name": "Leetcode RAG Helper",
+  "name": "LeetCode Helper",
   "version": "1.0",
-  "description": "Enhance Leetcode with AI-powered insights.",
-  "permissions": ["scripting", "activeTab"],
+  "description": "Enhance your LeetCode experience with AI-powered insights!",
+  "permissions": ["activeTab", "storage"],
   "host_permissions": ["https://leetcode.com/problems/*"],
-  "background": { "service_worker": "background.js" },
-  "action": { "default_popup": "popup.html", "default_icon": "icons/icon.webp" },
+  "background": {
+      "service_worker": "background.js"
+  },
+  "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+          "16": "icons/icon16.png",
+          "48": "icons/icon48.png",
+          "128": "icons/icon128.png"
+      }
+  },
   "content_scripts": [
-    {
-      "matches": ["https://leetcode.com/problems/*"],
-      "js": ["content.js"],
-      "css": ["styles.css"]
-    }
+      {
+          "matches": ["https://leetcode.com/problems/*"],
+          "js": ["content.js"],
+          "run_at": "document_end"
+      }
   ]
 }

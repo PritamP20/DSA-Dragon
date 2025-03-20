@@ -49,7 +49,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True  # Restrict in production
-
+CORS_ALLOW_CREDENTIALS = True
 ROOT_URLCONF = 'leetcode_rag.urls'
 
 TEMPLATES = [

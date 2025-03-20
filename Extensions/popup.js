@@ -1,12 +1,11 @@
-// popup.js
-document.getElementById("show-intuition").addEventListener("click", () => {
-    fetch("https://your-rag-app.com/api/show_intuition")
-    .then(response => response.json())
-    .then(data => alert("Intuition: " + data.message));
+document.getElementById("fetch-intuition").addEventListener("click", () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, { action: "fetch-intuition" });
+    });
 });
 
-document.getElementById("show-solution").addEventListener("click", () => {
-    fetch("https://your-rag-app.com/api/show_solution")
-    .then(response => response.json())
-    .then(data => alert("Solution: " + data.message));
+document.getElementById("fetch-solution").addEventListener("click", () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, { action: "fetch-solution" });
+    });
 });
