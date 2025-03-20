@@ -1,13 +1,12 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const codeContainer = document.getElementById("codeContainer");
+// popup.js
+document.getElementById("show-intuition").addEventListener("click", () => {
+    fetch("https://your-rag-app.com/api/show_intuition")
+    .then(response => response.json())
+    .then(data => alert("Intuition: " + data.message));
+});
 
-    chrome.storage.local.get("leetCodeCode", (data) => {
-        console.log("Popup retrieved:", data);
-        if (data.leetCodeCode) {
-            codeContainer.innerText = data.leetCodeCode;
-        } else {
-            codeContainer.innerText = "No code found!";
-            console.warn("No code stored in chrome.storage.local");
-        }
-    });
+document.getElementById("show-solution").addEventListener("click", () => {
+    fetch("https://your-rag-app.com/api/show_solution")
+    .then(response => response.json())
+    .then(data => alert("Solution: " + data.message));
 });

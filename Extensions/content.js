@@ -1,18 +1,40 @@
-function waitForMonacoAndExtract() {
-    let attempts = 0;
-    const interval = setInterval(() => {
-        let editor = monaco.editor.getModels()[0];
-        if (editor) {
-            clearInterval(interval);
-            let code = editor.getValue();
-            console.log("Extracted after delay:", code);
-            window.postMessage({ type: "LEETCODE_CODE", code: code }, "*");
-        } else if (attempts > 10) { // Stop after 10 attempts (~5s)
-            clearInterval(interval);
-            console.warn("Monaco Editor did not load.");
+const fetchLeetcodeData = async () => {
+    const descriptionDiv = document.querySelector("div.elfjS[data-track-load='description_content']");
+    if (descriptionDiv) {
+        const problemDescription = descriptionDiv.innerText;
+        console.log("Fetched Problem Description:", problemDescription);
+        await fetch("https://your-rag-app.com/api/knowledge", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ description: problemDescription })
+        });
+    }
+};
+
+const sendCodeChunks = () => {
+    const editor = monaco.editor.getModels()[0];
+    if (editor) {
+        const code = editor.getValue();
+        const lines = code.split('\n');
+        
+        for (let i = 0; i < lines.length; i += 2) {
+            const chunk = lines.slice(i, i + 2).join('\n');
+            fetch("https://your-rag-app.com/api/process", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ code: chunk })
+            })
+            .then(response => response.json())
+            .then(data => console.log("Response:", data))
+            .catch(error => console.error("Error:", error));
         }
-        attempts++;
-    }, 500); // Check every 500ms
+    }
+};
+
+const observer = new MutationObserver(sendCodeChunks);
+const editorContainer = document.querySelector(".monaco-editor");
+if (editorContainer) {
+    observer.observe(editorContainer, { childList: true, subtree: true, characterData: true });
 }
 
-waitForMonacoAndExtract();
+document.addEventListener("DOMContentLoaded", fetchLeetcodeData);

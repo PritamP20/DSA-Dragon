@@ -1,20 +1,17 @@
 {
-    "manifest_version": 3,
-    "name": "LeetCode Code Extractor",
-    "version": "1.0",
-    "permissions": ["scripting", "storage", "activeTab"],
-    "host_permissions": ["https://leetcode.com/*"],
-    "background": {
-      "service_worker": "background.js"
-    },
-    "action": {
-      "default_popup": "index.html"
-    },
-    "content_scripts": [
-      {
-        "matches": ["https://leetcode.com/*"],
-        "js": ["content.js"]
-      }
-    ]
-  }
-  
+  "manifest_version": 3,
+  "name": "Leetcode RAG Helper",
+  "version": "1.0",
+  "description": "Enhance Leetcode with AI-powered insights.",
+  "permissions": ["scripting", "activeTab"],
+  "host_permissions": ["https://leetcode.com/problems/*"],
+  "background": { "service_worker": "background.js" },
+  "action": { "default_popup": "popup.html", "default_icon": "icons/icon.webp" },
+  "content_scripts": [
+    {
+      "matches": ["https://leetcode.com/problems/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ]
+}
