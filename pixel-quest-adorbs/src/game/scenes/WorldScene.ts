@@ -430,7 +430,7 @@ private getNPCDialog(topic: string): string {
             
             console.log('Green grass collision detected! Switching to LeetCodeQuestScene...');
             this.topic = "Array";
-            this.difficulty = "Easy";
+            this.difficulty = "easy";
             this.scene.start('LeetCodeQuestScene', { 
                 topic: this.topic,
                 difficulty: this.difficulty
@@ -448,7 +448,7 @@ private getNPCDialog(topic: string): string {
             
             console.log('Red grass collision detected! Switching to LeetCodeQuestScene...');
             this.topic = "BST";
-            this.difficulty = "Hard";
+            this.difficulty = "hard";
             this.scene.start('LeetCodeQuestScene', { 
                 topic: this.topic,
                 difficulty: this.difficulty
@@ -466,7 +466,7 @@ private getNPCDialog(topic: string): string {
             
             console.log('Yellow grass collision detected! Switching to LeetCodeQuestScene...');
             this.topic = "Linked List";
-            this.difficulty = "Medium";
+            this.difficulty = "medium";
             this.scene.start('LeetCodeQuestScene', { 
                 topic: this.topic,
                 difficulty: this.difficulty

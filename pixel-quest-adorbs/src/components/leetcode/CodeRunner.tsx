@@ -178,6 +178,10 @@ const CodeRunner = () => {
               className="w-full h-full p-3 pl-8 bg-gray-900 text-gray-200 font-mono text-sm border-none focus:outline-none resize-none"
               value={code}
               onChange={(e) => setCode(e.target.value)}
+              onKeyDown={(e) => {
+                // Stop propagation for all key events when editor is focused
+                e.stopPropagation();
+              }}
               spellCheck="false"
             ></textarea>
           </div>
