@@ -364,6 +364,12 @@ export class LeetCodeQuestScene extends Phaser.Scene {
                     this.scrollContainer.y + deltaY,
                     maskHeight - this.scrollableHeight + 100, // Lower bound
                     100 // Upper bound
+                );
+                this.scrollContainer.y = newY;
+                this.lastY = pointer.y;
+            }
+        });
+        
         this.input.on('pointerup', () => {
             this.scrolling = false;
         });
