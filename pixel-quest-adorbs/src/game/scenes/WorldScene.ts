@@ -27,6 +27,8 @@ class NPC extends Phaser.GameObjects.Sprite {
 export class WorldScene extends Phaser.Scene {
   private player!: Phaser.Physics.Arcade.Sprite;
   private grassZones!: { x: number; y: number; width: number; height: number, grassType?:number, density?:number }[];
+  private yellowGrassZones!: { x: number; y: number; width: number; height: number, grassType?:number, density?:number }[];
+  private redGrassZones!: { x: number; y: number; width: number; height: number, grassType?:number, density?:number }[];
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private spaceKey!: Phaser.Input.Keyboard.Key;
   private map!: Phaser.GameObjects.Image;
@@ -41,6 +43,8 @@ export class WorldScene extends Phaser.Scene {
   private mapScale: number = 2;
   private showDebugBounds: boolean = true;
   private graphics: Phaser.GameObjects.Graphics;
+  private difficulty:String;
+  private topic:String;
 
   private greenGraphics:any;
   private redGraphics:any;
@@ -419,26 +423,66 @@ private getNPCDialog(topic: string): string {
 
 
   checkGrassCollision() {
-      for (let zone of this.grassZones) {
-          if (this.player.x > zone.x && this.player.x < zone.x + zone.width &&
-              this.player.y > zone.y && this.player.y < zone.y + zone.height) {
-              
-              console.log('Grass collision detected! Switching to LeetCodeQuestScene...');
-              // this.scene.start('LeetCodeQuestScene');
-              this.scene.start('LeetCodeQuestScene', { 
-                topic: "BST", // You can set this dynamically based on game state
-                difficulty: "easy" // You can set this dynamically based on player progress
+    // Check green grass zones (existing code)
+    for (let zone of this.grassZones) {
+        if (this.player.x > zone.x && this.player.x < zone.x + zone.width &&
+            this.player.y > zone.y && this.player.y < zone.y + zone.height) {
+            
+            console.log('Green grass collision detected! Switching to LeetCodeQuestScene...');
+            this.topic = "Array";
+            this.difficulty = "Easy";
+            this.scene.start('LeetCodeQuestScene', { 
+                topic: this.topic,
+                difficulty: this.difficulty
             });
-              this.userCoordinates.x = this.player.x +90;
-              this.userCoordinates.y = this.player.y;
-              break;
-          }
-      }
-  }  
+            this.userCoordinates.x = this.player.x + 90;
+            this.userCoordinates.y = this.player.y;
+            return; // Exit after finding collision
+        }
+    }
+    
+    // Add checks for red grass zones
+    for (let zone of this.redGrassZones) { // You need to store these zones in a class property
+        if (this.player.x > zone.x && this.player.x < zone.x + zone.width &&
+            this.player.y > zone.y && this.player.y < zone.y + zone.height) {
+            
+            console.log('Red grass collision detected! Switching to LeetCodeQuestScene...');
+            this.topic = "BST";
+            this.difficulty = "Hard";
+            this.scene.start('LeetCodeQuestScene', { 
+                topic: this.topic,
+                difficulty: this.difficulty
+            });
+            this.userCoordinates.x = this.player.x + 90;
+            this.userCoordinates.y = this.player.y;
+            return; // Exit after finding collision
+        }
+    }
+    
+    // Add checks for yellow grass zones
+    for (let zone of this.yellowGrassZones) { // You need to store these zones in a class property
+        if (this.player.x > zone.x && this.player.x < zone.x + zone.width &&
+            this.player.y > zone.y && this.player.y < zone.y + zone.height) {
+            
+            console.log('Yellow grass collision detected! Switching to LeetCodeQuestScene...');
+            this.topic = "Linked List";
+            this.difficulty = "Medium";
+            this.scene.start('LeetCodeQuestScene', { 
+                topic: this.topic,
+                difficulty: this.difficulty
+            });
+            this.userCoordinates.x = this.player.x + 90;
+            this.userCoordinates.y = this.player.y;
+            return; // Exit after finding collision
+        }
+    }
+}
 
   randomizeGrassZones() {
     // Clear the green graphics specifically
     this.greenGraphics.clear();
+    this.difficulty="easy"
+    this.topic="array"
   
     // Generate random grass zones
     this.grassZones = [];
@@ -462,61 +506,57 @@ private getNPCDialog(topic: string): string {
   
     console.log("Green grass zones randomized:", this.grassZones);
   }
-  randomYellowGrass() {
-    // Clear the red graphics specifically
-    this.yellowGraphics.clear();
-  
-    // Generate random grass zones for red grass - use a different array to avoid conflicts
-    let yellowGrassZone = [];
-    for (let i = 0; i < Phaser.Math.Between(2, 20); i++) {
-      let x = Phaser.Math.Between(1163.5922317655475,1389.6032346285429);
-      let y = Phaser.Math.Between(644.4246036807261, 794.4246036807268);
-      let width = Phaser.Math.Between(40, 80);
-      let height = Phaser.Math.Between(40, 80);
-  
-      yellowGrassZone.push({ x, y, width, height });
-    }
-  
-    // Add other zones as you have them...
-  
-    // Set red color with full opacity
-    this.yellowGraphics.fillStyle(0xFFFF00, 1.0); 
-    
-    // Draw the red grass zones using the red graphics object
-    yellowGrassZone.forEach(zone => {
-      this.yellowGraphics.fillRect(zone.x, zone.y, zone.width, zone.height);
-    });
-  
-    console.log("Red grass zones randomized:", yellowGrassZone);
-  }
-  
   randomRedGrass() {
     // Clear the red graphics specifically
     this.redGraphics.clear();
-  
-    // Generate random grass zones for red grass - use a different array to avoid conflicts
-    let redGrassZones = [];
+    
+    // Store as a class property instead of local variable
+    this.redGrassZones = [];
     for (let i = 0; i < Phaser.Math.Between(2, 20); i++) {
-      let x = Phaser.Math.Between(862.3333333333337, 988.3333333333296);
-      let y = Phaser.Math.Between(249.4136008177218, 515.4136008177218);
-      let width = Phaser.Math.Between(40, 80);
-      let height = Phaser.Math.Between(40, 80);
-  
-      redGrassZones.push({ x, y, width, height });
+        let x = Phaser.Math.Between(862.3333333333337, 988.3333333333296);
+        let y = Phaser.Math.Between(249.4136008177218, 515.4136008177218);
+        let width = Phaser.Math.Between(40, 80);
+        let height = Phaser.Math.Between(40, 80);
+    
+        this.redGrassZones.push({ x, y, width, height });
     }
-  
-    // Add other zones as you have them...
-  
+    
     // Set red color with full opacity
     this.redGraphics.fillStyle(0xFF0000, 1.0);
     
     // Draw the red grass zones using the red graphics object
-    redGrassZones.forEach(zone => {
-      this.redGraphics.fillRect(zone.x, zone.y, zone.width, zone.height);
+    this.redGrassZones.forEach(zone => {
+        this.redGraphics.fillRect(zone.x, zone.y, zone.width, zone.height);
     });
-  
-    console.log("Red grass zones randomized:", redGrassZones);
-  }
+    
+    console.log("Red grass zones randomized:", this.redGrassZones);
+}
+
+randomYellowGrass() {
+    // Clear the yellow graphics specifically
+    this.yellowGraphics.clear();
+    
+    // Store as a class property instead of local variable
+    this.yellowGrassZones = [];
+    for (let i = 0; i < Phaser.Math.Between(2, 20); i++) {
+        let x = Phaser.Math.Between(1163.5922317655475, 1389.6032346285429);
+        let y = Phaser.Math.Between(644.4246036807261, 794.4246036807268);
+        let width = Phaser.Math.Between(40, 80);
+        let height = Phaser.Math.Between(40, 80);
+    
+        this.yellowGrassZones.push({ x, y, width, height });
+    }
+    
+    // Set yellow color with full opacity
+    this.yellowGraphics.fillStyle(0xFFFF00, 1.0); 
+    
+    // Draw the yellow grass zones using the yellow graphics object
+    this.yellowGrassZones.forEach(zone => {
+        this.yellowGraphics.fillRect(zone.x, zone.y, zone.width, zone.height);
+    });
+    
+    console.log("Yellow grass zones randomized:", this.yellowGrassZones);
+}
 
 
   update(time: number, delta: number) {
