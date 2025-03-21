@@ -62,26 +62,61 @@ export class LearningScene extends Phaser.Scene {
         this.cameras.main.scrollY += deltaY * 0.5; // Adjust scroll speed
     });
 
-    // Create the YouTube iframe element
-    const video = document.createElement("iframe");
-    video.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"; // Replace with your YouTube URL
-    video.width = "560";
-    video.height = "315";
-    video.allow = "autoplay; encrypted-media"; 
-    video.frameBorder = "0";
-    video.style.position = "absolute";
+    // // Create the YouTube iframe element
+    // const video = document.createElement("iframe");
+    // video.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"; // Replace 
+    // video.width = "560";
+    // video.height = "315";
+    // video.allow = "autoplay; encrypted-media"; 
+    // video.frameBorder = "0";
+    // video.style.position = "absolute";
     
-    // Add the video element to the Phaser scene
-    const videoElement = this.add.dom(this.scale.width / 2, this.scale.height/2 -50, video);
+    // // Add the video element to the Phaser scene
+    // const videoElement = this.add.dom(this.scale.width / 2, this.scale.height/2 -50, video);
 
-    // Handle fullscreen mode
-    this.scale.on('resize', (gameSize: { width: number, height: number }) => {
-        videoElement.setPosition(gameSize.width / 2, gameSize.height / 2);
-        video.width = `${gameSize.width * 0.5}`;
-        video.height = `${gameSize.height * 0.3}`;
-    });
+    // // Handle fullscreen mode
+    // this.scale.on('resize', (gameSize: { width: number, height: number }) => {
+    //     videoElement.setPosition(gameSize.width / 2, gameSize.height / 2);
+    //     video.width = `${gameSize.width * 0.5}`;
+    //     video.height = `${gameSize.height * 0.3}`;
+    // });
+
+    this.createVideoPlayer();
 
 
+    }
+
+    private createVideoPlayer() {
+        // Create the YouTube iframe element
+        const video = document.createElement("iframe");
+        video.width = "560";
+        video.height = "315";
+        video.allow = "autoplay; encrypted-media";
+        video.frameBorder = "0";
+        video.style.position = "absolute";
+        
+        // Set the correct video URL from course data
+        if (this.courseData.videoURL) {
+            // Convert regular YouTube URL to embed URL if needed
+            let embedURL = this.courseData.videoURL;
+            if (embedURL.includes('watch?v=')) {
+                const videoId = embedURL.split('v=')[1].split('&')[0];
+                embedURL = `https://www.youtube.com/embed/${videoId}`;
+            }
+            video.src = embedURL;
+        } else {
+            console.error("No video URL found for topic:", this.currentTopic);
+        }
+        
+        // Append to the DOM using Phaser's add.dom
+        const videoElement = this.add.dom(this.scale.width / 2, this.scale.height / 2 - 50, video);
+        
+        // Handle fullscreen mode
+        this.scale.on('resize', (gameSize: { width: number, height: number }) => {
+            videoElement.setPosition(gameSize.width / 2, gameSize.height / 2);
+            video.width = `${gameSize.width * 0.5}`;
+            video.height = `${gameSize.height * 0.3}`;
+        });
     }
     
     private loadCourseData() {
@@ -91,7 +126,7 @@ export class LearningScene extends Phaser.Scene {
                 title: 'Binary Search Trees',
                 subtitle: 'Level up your tree traversal skills!',
                 videoTitle: 'Binary Search Trees: From Theory to Implementation',
-                videoURL: 'https://www.youtube.com/watch?v=bst-example',
+                videoURL: 'https://www.youtube.com/watch?v=MWSBgTS_GkY',
                 thumbnailKey: 'thumb-bst',
                 duration: '8:42',
                 channel: 'Tree Traversal Academy',
@@ -109,7 +144,7 @@ export class LearningScene extends Phaser.Scene {
                 title: 'Dynamic Programming',
                 subtitle: 'Master the art of optimal substructure',
                 videoTitle: 'Dynamic Programming: From Fibonacci to Advanced Algorithms',
-                videoURL: 'https://www.youtube.com/watch?v=dynamic-example',
+                videoURL: 'https://www.youtube.com/watch?v=MWSBgTS_GkY',
                 thumbnailKey: 'thumb-dynamic',
                 duration: '10:24',
                 channel: 'AlgoExpert',
@@ -127,7 +162,7 @@ export class LearningScene extends Phaser.Scene {
                 title: 'Graph Algorithms',
                 subtitle: 'Navigate networks like a pro',
                 videoTitle: 'Graph Traversal: BFS, DFS, and Dijkstra\'s Algorithm',
-                videoURL: 'https://www.youtube.com/watch?v=graphs-example',
+                videoURL: 'https://www.youtube.com/watch?v=MWSBgTS_GkY',
                 thumbnailKey: 'thumb-graphs',
                 duration: '12:15',
                 channel: 'NetworkNinja',
@@ -181,6 +216,13 @@ export class LearningScene extends Phaser.Scene {
         
         // Set the current course data based on the topic
         this.courseData = courseDatabase[this.currentTopic] || courseDatabase['default'];
+        const iframe = document.querySelector("iframe"); // Select the iframe
+        if (iframe) {
+            iframe.src = this.courseData.videoURL; // ✅ Assign safely
+        } else {
+            console.error("Iframe not found");
+        }
+
     }
 
     private createDynamicLearningScene() {

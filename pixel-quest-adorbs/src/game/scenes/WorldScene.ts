@@ -37,7 +37,7 @@ class NPC extends Phaser.GameObjects.Sprite {
 
 export class WorldScene extends Phaser.Scene {
   private player!: Phaser.Physics.Arcade.Sprite;
-  private grassZones!: { x: number; y: number; width: number; height: number }[];
+  private grassZones!: { x: number; y: number; width: number; height: number, grassType?:number, density?:number }[];
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private spaceKey!: Phaser.Input.Keyboard.Key;
   private map!: Phaser.GameObjects.Image;
@@ -65,33 +65,46 @@ export class WorldScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('town-map', 'assets/town-map.png');
-    this.load.spritesheet('player', 'assets/player.png', { frameWidth: 16, frameHeight: 32 });
-
-    this.load.spritesheet('npcs', 'assets/npcs.png', { frameWidth: 32, frameHeight: 48 });
-    this.load.image('interaction-icon', 'assets/interaction.png');
+    this.load.on('filecomplete', (key) => {
+      console.log(`Asset loaded: ${key}`);
+    });
     
-    // Create player animations
-    this.createPlayerAnimations();
+    this.load.on('complete', () => {
+      console.log('All assets loaded');
+      if (this.textures.exists('player')) {
+        console.log('Player texture loaded successfully');
+        console.log('Player texture frames:', this.textures.get('player').frameTotal);
+      } else {
+        console.log('Player texture FAILED to load');
+      }
+    });
+
+    this.load.spritesheet('player-img', 'assets/player.png', { frameWidth: 0, frameHeight: 0 });
+
+
+    this.load.spritesheet('npcs', 'player.png', { 
+      frameWidth: 32, 
+      frameHeight: 48  
+  });
   }
 
   //start
 
   private createNerdNPCs() {
     // Create NPCs with different topics
+    // this.npcsNerd = this.physics.add.sprite(400, 1300, "player").setScale(0.1);
     const npcData = [
         { id: 'professor_tree', x: 200, y: 150, frame: 0, topic: 'bst', name: 'Professor Oak' },
         { id: 'algorithm_master', x: 400, y: 250, frame: 1, topic: 'dynamic', name: 'Dr. Dynamic' },
         { id: 'network_guru', x: 600, y: 350, frame: 2, topic: 'graphs', name: 'Graph Master' },
         { id: 'data_organizer', x: 300, y: 450, frame: 3, topic: 'sorting', name: 'Sorter Sam' }
     ];
-    
     npcData.forEach(data => {
         const npc = new NPC(
             this,
             data.x,
             data.y,
-            'npcs',
+            'npcs',  // This is the key for your spritesheet/image
             data.frame,
             data.id,
             data.topic,
@@ -263,7 +276,15 @@ private getNPCDialog(topic: string): string {
   //end
 
   createPlayerAnimations() {
-    // Idle animations
+    // Idle animation
+      try {
+        // Your existing animation creation code
+        this.anims.create({
+          key: 'player-idle-down',
+          frames: this.anims.generateFrameNumbers('player', { start: 0, end: 0 }),
+          frameRate: 10,
+          repeat: -1
+        });
     this.anims.create({
       key: 'player-idle-down',
       frames: this.anims.generateFrameNumbers('player', { start: 0, end: 0 }),
@@ -314,14 +335,27 @@ private getNPCDialog(topic: string): string {
       frameRate: 10,
       repeat: -1
     });
+    if (this.anims.exists('player-idle-down')) {
+      console.log('Animations created successfully');
+    } else {
+      console.log('Failed to create animations');
+    }
+  } catch (error) {
+    console.error('Animation creation error:', error);
+  }
   }
 
   create() {
+    // const testSprite = this.add.sprite(400, 300, 'player');
+    // testSprite.setScale(4); // Make it big so it's easy to see
+    // console.log('Test sprite created', testSprite);
+
     // Create the game world
     this.createWorld();
     
     // Set up player character
     this.createPlayer();
+
     
     // Set up camera
     this.setupCamera();
@@ -339,11 +373,6 @@ private getNPCDialog(topic: string): string {
 
     this.setupInteraction();
 
-    //Create grass zone
-    // this.grassZones = [
-    //     { x: 200, y: 450, width: 50, height: 50 }, 
-    //     { x: 350, y: 450, width: 60, height: 60 }
-    // ];
     this.graphics = this.add.graphics();
         this.randomizeGrassZones();
     this.graphics = this.add.graphics();
@@ -371,6 +400,7 @@ private getNPCDialog(topic: string): string {
     });
   }
 
+
   checkGrassCollision() {
       for (let zone of this.grassZones) {
           if (this.player.x > zone.x && this.player.x < zone.x + zone.width &&
@@ -391,13 +421,30 @@ private getNPCDialog(topic: string): string {
 
     // Generate 2-3 random grass zones
     this.grassZones = [];
-    for (let i = 0; i < Phaser.Math.Between(2, 9); i++) {
-        let x = Phaser.Math.Between(1000, 2000);
-        let y = Phaser.Math.Between(1000, 2000);
+    for (let i = 0; i < Phaser.Math.Between(2, 20); i++) {
+        let x = Phaser.Math.Between(875.3333333333337 , 1575.3333333333296);
+        let y = Phaser.Math.Between(1468.4136008177218, 1868.4136008177218);
         let width = Phaser.Math.Between(40, 80);
         let height = Phaser.Math.Between(40, 80);
 
         this.grassZones.push({ x, y, width, height });
+    }
+
+    for (let i = 0; i < Phaser.Math.Between(2, 20); i++) {
+      let x = Phaser.Math.Between(1062.8595479208984 , 1346.1928812542292);
+      let y = Phaser.Math.Between(1026.6446609406735, 2142.666666666666);
+      let width = Phaser.Math.Between(40, 80);
+      let height = Phaser.Math.Between(40, 80);
+
+      this.grassZones.push({ x, y, width, height });
+    }
+    for (let i = 0; i < Phaser.Math.Between(2, 20); i++) {
+      let x = Phaser.Math.Between(32, 232.0000000000001);
+      let y = Phaser.Math.Between(1385.5152117245555, 2087.0304234491214);
+      let width = Phaser.Math.Between(40, 80);
+      let height = Phaser.Math.Between(40, 80);
+
+      this.grassZones.push({ x, y, width, height });
     }
 
     // Draw new grass zones
@@ -436,6 +483,7 @@ private getNPCDialog(topic: string): string {
 
   private createWorld() {
     // Add the map image
+    // In your create() function
     this.map = this.add.image(0, 0, 'town-map');
     this.map.setOrigin(0, 0);
     this.map.setScale(this.mapScale);
@@ -443,7 +491,7 @@ private getNPCDialog(topic: string): string {
 
   private createPlayer() {
     // Create the player sprite at the bottom of the map
-    this.player = this.physics.add.sprite(this.userCoordinates.x, this.userCoordinates.y, 'player');
+    this.player = this.physics.add.sprite(this.userCoordinates.x, this.userCoordinates.y, 'player-img');
     this.player.setScale(2);
     this.player.setCollideWorldBounds(true);
     this.player.setSize(12, 12);
@@ -529,28 +577,31 @@ private getNPCDialog(topic: string): string {
     // NPCs near houses - using the house coordinates from the collision data
     
     // NPC near the main house (1300, 1510)
-    this.createNPC(1250, 1460, 'Mayor', 'Welcome to our town! I am the mayor here. We have many exciting places to explore.');
+    this.createNPC(1250, 1460, 'Mayor', "Just like how a dictionary allows quick lookups, HashMaps in programming provide efficient key-value pair searching!");
     
     // NPC near the second house (880, 1510)
-    this.createNPC(830, 1460, 'Shopkeeper', 'Hello traveler! I sell all sorts of items. Would you like to see my wares?');
+    //HINT RELATED TO BINARY SEARCH
+    this.createNPC(830, 1460, 'Shopkeeper', "Finding the right item in a shop is like Binary Search—efficient and fast when everything is sorted!");
     
-    // NPC near the third house (380, 1580)
-    this.createNPC(330, 1530, 'Farmer', 'The crops are growing well this season. Make sure to visit our local market!');
+    // HINT RELATED TO BINARY TREES IN DSA
+    this.createNPC(330, 1530, 'Farmer', "A well-structured farm, like a Binary Tree, ensures everything is organized for quick access and growth!");
     
-    // NPC near fence area (450, 0)
-    this.createNPC(400, 50, 'Guard', 'Be careful wandering outside the town. There are strange creatures in the wilderness.');
+    // HINT RELATED TO STACKS IN DSA
+    this.createNPC(400, 50, 'Guard', "Just like a stack, guards handle threats in a Last-In-First-Out manner—dealing with the most recent danger first!");
     
     // NPC near trees (800, 2200)
-    this.createNPC(750, 2150, 'Woodcutter', 'The forest provides us with timber and shelter. Respect nature, traveler.');
+    // A HINT RELATED TO LINKED LISTS IN DSA
+    this.createNPC(750, 2150, 'Woodcutter', "A linked list is like a chain of trees in a forest—each tree (node) is connected to the next!");
     
-    // NPC near the bottom of the map
-    this.createNPC(1000, 2700, 'Fisher', 'The lake has the best fish you\'ll ever taste. I\'ve been fishing here for decades.');
+    // A HINT RELATED TO THE CODING JOURNEY AHEAD
+    this.createNPC(1000, 2700, 'Fisher', '"Learning to code is like fishing—you need patience, the right tools, and practice to master it!"');
     
     // NPC near the mountain (470, 800)
     this.createNPC(420, 750, 'Miner', 'The mountains contain valuable minerals. We\'ve been mining here for generations.');
     
     // NPC on the path (1000, 2000)
-    this.createNPC(1000, 2000, 'Traveler', 'I\'m just passing through. This town has such friendly people!');
+    //A HINT RELATED TO ARRAYS IN DSA
+    this.createNPC(1000, 2000, 'Traveler', "An array is like a road—you can travel to any point directly if you know the index (position)!");
   }
 
   private createNPC(x: number, y: number, name: string, dialog: string, educationalContent?: any[]) {
@@ -722,6 +773,8 @@ private getNPCDialog(topic: string): string {
         });
     }
   }
+
+  
 
   private checkInteraction() {
     // Get facing tile based on direction
@@ -900,59 +953,59 @@ private getNPCDialog(topic: string): string {
 //     this.createPlayerAnimations();
 //   }
 
-//   createPlayerAnimations() {
-//     // Idle animations
-//     this.anims.create({
-//       key: 'player-idle-down',
-//       frames: this.anims.generateFrameNumbers('player', { start: 0, end: 0 }),
-//       frameRate: 10,
-//       repeat: -1
-//     });
-//     this.anims.create({
-//       key: 'player-idle-up',
-//       frames: this.anims.generateFrameNumbers('player', { start: 4, end: 4 }),
-//       frameRate: 10,
-//       repeat: -1
-//     });
-//     this.anims.create({
-//       key: 'player-idle-left',
-//       frames: this.anims.generateFrameNumbers('player', { start: 8, end: 8 }),
-//       frameRate: 10,
-//       repeat: -1
-//     });
-//     this.anims.create({
-//       key: 'player-idle-right',
-//       frames: this.anims.generateFrameNumbers('player', { start: 12, end: 12 }),
-//       frameRate: 10,
-//       repeat: -1
-//     });
+  // createPlayerAnimations() {
+  //   // Idle animations
+  //   this.anims.create({
+  //     key: 'player-idle-down',
+  //     frames: this.anims.generateFrameNumbers('player', { start: 0, end: 0 }),
+  //     frameRate: 10,
+  //     repeat: -1
+  //   });
+  //   this.anims.create({
+  //     key: 'player-idle-up',
+  //     frames: this.anims.generateFrameNumbers('player', { start: 4, end: 4 }),
+  //     frameRate: 10,
+  //     repeat: -1
+  //   });
+  //   this.anims.create({
+  //     key: 'player-idle-left',
+  //     frames: this.anims.generateFrameNumbers('player', { start: 8, end: 8 }),
+  //     frameRate: 10,
+  //     repeat: -1
+  //   });
+  //   this.anims.create({
+  //     key: 'player-idle-right',
+  //     frames: this.anims.generateFrameNumbers('player', { start: 12, end: 12 }),
+  //     frameRate: 10,
+  //     repeat: -1
+  //   });
     
-//     // Walking animations
-//     this.anims.create({
-//       key: 'player-walk-down',
-//       frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
-//       frameRate: 10,
-//       repeat: -1
-//     });
-//     this.anims.create({
-//       key: 'player-walk-up',
-//       frames: this.anims.generateFrameNumbers('player', { start: 4, end: 7 }),
-//       frameRate: 10,
-//       repeat: -1
-//     });
-//     this.anims.create({
-//       key: 'player-walk-left',
-//       frames: this.anims.generateFrameNumbers('player', { start: 8, end: 11 }),
-//       frameRate: 10,
-//       repeat: -1
-//     });
-//     this.anims.create({
-//       key: 'player-walk-right',
-//       frames: this.anims.generateFrameNumbers('player', { start: 12, end: 15 }),
-//       frameRate: 10,
-//       repeat: -1
-//     });
-//   }
+  //   // Walking animations
+  //   this.anims.create({
+  //     key: 'player-walk-down',
+  //     frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
+  //     frameRate: 10,
+  //     repeat: -1
+  //   });
+  //   this.anims.create({
+  //     key: 'player-walk-up',
+  //     frames: this.anims.generateFrameNumbers('player', { start: 4, end: 7 }),
+  //     frameRate: 10,
+  //     repeat: -1
+  //   });
+  //   this.anims.create({
+  //     key: 'player-walk-left',
+  //     frames: this.anims.generateFrameNumbers('player', { start: 8, end: 11 }),
+  //     frameRate: 10,
+  //     repeat: -1
+  //   });
+  //   this.anims.create({
+  //     key: 'player-walk-right',
+  //     frames: this.anims.generateFrameNumbers('player', { start: 12, end: 15 }),
+  //     frameRate: 10,
+  //     repeat: -1
+  //   });
+  // }
 
 //   create() {
 //     // Create the game world
