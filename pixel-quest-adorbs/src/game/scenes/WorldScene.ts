@@ -1,16 +1,5 @@
 import Phaser from 'phaser';
 
-// export type NPC = {
-//   scene: any, // or the correct type
-//   x: number,
-//   y: number,
-//   texture: string,
-//   frame: number,
-//   id: string,
-//   topic: string,
-//   name: string
-// };
-
 class NPC extends Phaser.GameObjects.Sprite {
   public id: string;
   public topic: string;
@@ -79,16 +68,17 @@ export class WorldScene extends Phaser.Scene {
       }
     });
 
-    this.load.spritesheet('player-img', 'assets/player.png', { frameWidth: 0, frameHeight: 0 });
+    this.load.spritesheet('player', 'player.png', { frameWidth: 10, frameHeight: 10 });
 
 
-    this.load.spritesheet('npcs', 'player.png', { 
-      frameWidth: 32, 
-      frameHeight: 48  
-  });
+    this.load.spritesheet('npcs', 'blueguy.png', { frameWidth: 60, frameHeight: 60 });
+
+    this.load.spritesheet('nerdnpecs', 'npcs.png',{ frameWidth: 60, frameHeight: 60 } )
+
+const npc = this.add.sprite(50, 50, 'npcs').setScale(100); // Setting the scale here won't work, since setScale(100) is later overwritten
+npc.setScale(3);  // Use a larger value like 3 to zoom in on the sprite
+
   }
-
-  //start
 
   private createNerdNPCs() {
     // Create NPCs with different topics
@@ -350,6 +340,19 @@ private getNPCDialog(topic: string): string {
     // testSprite.setScale(4); // Make it big so it's easy to see
     // console.log('Test sprite created', testSprite);
 
+    console.log('Loaded textures:', Object.keys(this.textures.list));
+    if (this.textures.exists('player')) {
+      console.log('Player texture exists with frames:', this.textures.get('player').frameTotal);
+    } else {
+      console.log('Player texture failed to load');
+    }
+    
+    if (this.textures.exists('npcs')) {
+      console.log('NPC texture exists with frames:', this.textures.get('npcs').frameTotal);
+    } else {
+      console.log('NPC texture failed to load');
+    }
+
     // Create the game world
     this.createWorld();
     
@@ -491,7 +494,7 @@ private getNPCDialog(topic: string): string {
 
   private createPlayer() {
     // Create the player sprite at the bottom of the map
-    this.player = this.physics.add.sprite(this.userCoordinates.x, this.userCoordinates.y, 'player-img');
+    this.player = this.physics.add.sprite(this.userCoordinates.x, this.userCoordinates.y, 'player');
     this.player.setScale(2);
     this.player.setCollideWorldBounds(true);
     this.player.setSize(12, 12);

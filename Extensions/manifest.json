@@ -1,20 +1,19 @@
 {
-    "manifest_version": 3,
-    "name": "LeetCode Code Extractor",
-    "version": "1.0",
-    "permissions": ["scripting", "storage", "activeTab"],
-    "host_permissions": ["https://leetcode.com/*"],
-    "background": {
-      "service_worker": "background.js"
-    },
-    "action": {
-      "default_popup": "index.html"
-    },
-    "content_scripts": [
-      {
-        "matches": ["https://leetcode.com/*"],
-        "js": ["content.js"]
-      }
-    ]
-  }
-  
+  "manifest_version": 3,
+  "name": "LeetCode Code Extractor",
+  "version": "1.0",
+  "permissions": ["scripting", "storage", "activeTab"],
+  "host_permissions": ["https://leetcode.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://leetcode.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
