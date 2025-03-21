@@ -47,7 +47,8 @@ export class WorldScene extends Phaser.Scene {
     private interactionKey!: Phaser.Input.Keyboard.Key;
     private interactionPrompt!: Phaser.GameObjects.Container;
 
-  private userCoordinates: { x: number; y: number } = { x: 1360, y: 2750 };
+  // private userCoordinates: { x: number; y: number } = { x: 1360, y: 2750 };
+  private userCoordinates: { x: number; y: number } = { x: 600, y: 600 };
   
   constructor() {
     super('WorldScene');

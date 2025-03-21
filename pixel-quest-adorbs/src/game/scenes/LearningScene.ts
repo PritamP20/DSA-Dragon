@@ -1,8 +1,10 @@
+import {generateCourseData} from "../../components/api/courseDataApi.js";
 export class LearningScene extends Phaser.Scene {
     private backgroundImage!: Phaser.GameObjects.Image;
     private mapScale: number = 0.7;
     private currentTopic: string = '';
     private courseData: any = {};
+    private loadingText:any="fetching from ai"
     
     constructor() {
         super('DynamicLearningScene');
@@ -30,200 +32,443 @@ export class LearningScene extends Phaser.Scene {
         this.load.image('thumb-sorting', 'assets/thumbnails/sorting-thumbnail.png');
     }
 
-    create() {
-        this.createDynamicLearningScene();
-        // Set world bounds larger than the screen
-        this.cameras.main.setBounds(0, 0, 800, 2000); // Adjust height for scrolling
+    // create() {
+    //     this.createDynamicLearningScene();
+    //     // Set world bounds larger than the screen
+    //     this.cameras.main.setBounds(0, 0, 800, 2000); // Adjust height for scrolling
 
-        // Enable dragging to scroll
-        this.input.on("pointermove", (pointer) => {
-        if (pointer.isDown) {
-            this.cameras.main.scrollY -= (pointer.velocity.y * 0.5);
-        }
-        });
+    //     // Enable dragging to scroll
+    //     this.input.on("pointermove", (pointer) => {
+    //     if (pointer.isDown) {
+    //         this.cameras.main.scrollY -= (pointer.velocity.y * 0.5);
+    //     }
+    //     });
 
-        // Optional: Add mouse wheel scroll
-        this.input.on("wheel", (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
-        this.cameras.main.scrollY += deltaY * 0.5; // Adjust scroll speed
-        });
+    //     // Optional: Add mouse wheel scroll
+    //     this.input.on("wheel", (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
+    //     this.cameras.main.scrollY += deltaY * 0.5; // Adjust scroll speed
+    //     });
 
-        // Set world bounds larger than the screen
-    this.cameras.main.setBounds(0, 0, 800, 2000); // Adjust height for scrolling
+    //     // Set world bounds larger than the screen
+    // this.cameras.main.setBounds(0, 0, 800, 2000); // Adjust height for scrolling
 
-    // Enable dragging to scroll
-    this.input.on("pointermove", (pointer) => {
-        if (pointer.isDown) {
-            this.cameras.main.scrollY -= (pointer.velocity.y * 0.5);
-        }
-    });
-
-    // Mouse wheel scroll
-    this.input.on("wheel", (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
-        this.cameras.main.scrollY += deltaY * 0.5; // Adjust scroll speed
-    });
-
-    // // Create the YouTube iframe element
-    // const video = document.createElement("iframe");
-    // video.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"; // Replace 
-    // video.width = "560";
-    // video.height = "315";
-    // video.allow = "autoplay; encrypted-media"; 
-    // video.frameBorder = "0";
-    // video.style.position = "absolute";
-    
-    // // Add the video element to the Phaser scene
-    // const videoElement = this.add.dom(this.scale.width / 2, this.scale.height/2 -50, video);
-
-    // // Handle fullscreen mode
-    // this.scale.on('resize', (gameSize: { width: number, height: number }) => {
-    //     videoElement.setPosition(gameSize.width / 2, gameSize.height / 2);
-    //     video.width = `${gameSize.width * 0.5}`;
-    //     video.height = `${gameSize.height * 0.3}`;
+    // // Enable dragging to scroll
+    // this.input.on("pointermove", (pointer) => {
+    //     if (pointer.isDown) {
+    //         this.cameras.main.scrollY -= (pointer.velocity.y * 0.5);
+    //     }
     // });
 
-    this.createVideoPlayer();
+    // // Mouse wheel scroll
+    // this.input.on("wheel", (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
+    //     this.cameras.main.scrollY += deltaY * 0.5; // Adjust scroll speed
+    // });
+
+    // // // Create the YouTube iframe element
+    // // const video = document.createElement("iframe");
+    // // video.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"; // Replace 
+    // // video.width = "560";
+    // // video.height = "315";
+    // // video.allow = "autoplay; encrypted-media"; 
+    // // video.frameBorder = "0";
+    // // video.style.position = "absolute";
+    
+    // // // Add the video element to the Phaser scene
+    // // const videoElement = this.add.dom(this.scale.width / 2, this.scale.height/2 -50, video);
+
+    // // // Handle fullscreen mode
+    // // this.scale.on('resize', (gameSize: { width: number, height: number }) => {
+    // //     videoElement.setPosition(gameSize.width / 2, gameSize.height / 2);
+    // //     video.width = `${gameSize.width * 0.5}`;
+    // //     video.height = `${gameSize.height * 0.3}`;
+    // // });
+
+    // // this.createVideoPlayer();
+
+    // this.events.once('courseDataLoaded', () => {
+    //     // Create the UI with course data
+    //     this.createCourseContentUI();
+    //     // Create the video player
+    //     this.createVideoPlayer();
+    // });
 
 
-    }
+    // }
 
-    private createVideoPlayer() {
-        // Create the YouTube iframe element
-        const video = document.createElement("iframe");
-        video.width = "560";
-        video.height = "315";
-        video.allow = "autoplay; encrypted-media";
-        video.frameBorder = "0";
-        video.style.position = "absolute";
+    create() {
+        // Set up the camera and world bounds first
+        this.createSceneSetup(); // Just camera and bounds
         
-        // Set the correct video URL from course data
-        if (this.courseData.videoURL) {
-            // Convert regular YouTube URL to embed URL if needed
-            let embedURL = this.courseData.videoURL;
-            if (embedURL.includes('watch?v=')) {
-                const videoId = embedURL.split('v=')[1].split('&')[0];
-                embedURL = `https://www.youtube.com/embed/${videoId}`;
+        // Enable dragging to scroll
+        this.input.on("pointermove", (pointer) => {
+            if (pointer.isDown) {
+                this.cameras.main.scrollY -= (pointer.velocity.y * 0.5);
             }
-            video.src = embedURL;
-        } else {
-            console.error("No video URL found for topic:", this.currentTopic);
-        }
+        });
+    
+        // Mouse wheel scroll
+        this.input.on("wheel", (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
+            this.cameras.main.scrollY += deltaY * 0.5; // Adjust scroll speed
+        });
         
-        // Append to the DOM using Phaser's add.dom
-        const videoElement = this.add.dom(this.scale.width / 2, this.scale.height / 2 - 50, video);
+        // Create the initial UI that doesn't depend on course data
+        this.createBackgroundUI();
         
-        // Handle fullscreen mode
-        this.scale.on('resize', (gameSize: { width: number, height: number }) => {
-            videoElement.setPosition(gameSize.width / 2, gameSize.height / 2);
-            video.width = `${gameSize.width * 0.5}`;
-            video.height = `${gameSize.height * 0.3}`;
+        // Listen for when course data is loaded
+        this.events.once('courseDataLoaded', () => {
+            // Create the UI with course data
+            this.createCourseContentUI();
+            // Create the video player
+            this.createVideoPlayer();
+            // Now create the content that depends on course data
+            this.createDynamicLearningScene()
         });
     }
     
-    private loadCourseData() {
-        // Define course data for different topics
-        const courseDatabase = {
-            'bst': {
-                title: 'Binary Search Trees',
-                subtitle: 'Level up your tree traversal skills!',
-                videoTitle: 'Binary Search Trees: From Theory to Implementation',
-                videoURL: 'https://www.youtube.com/watch?v=MWSBgTS_GkY',
-                thumbnailKey: 'thumb-bst',
-                duration: '8:42',
-                channel: 'Tree Traversal Academy',
-                views: '15K',
-                concepts: [
-                    '🌳 A BST is like a family tree where smaller values go left',
-                    '🔍 Search operations are O(log n) on average - super fast!',
-                    '⚖️ Balanced trees are happy trees - they perform better',
-                    '🧩 Insert and delete operations preserve the BST property'
-                ],
-                funFact: 'The worst-case BST is just a linked list. Sad but true!',
-                xpReward: 50
-            },
-            'dynamic': {
-                title: 'Dynamic Programming',
-                subtitle: 'Master the art of optimal substructure',
-                videoTitle: 'Dynamic Programming: From Fibonacci to Advanced Algorithms',
-                videoURL: 'https://www.youtube.com/watch?v=MWSBgTS_GkY',
-                thumbnailKey: 'thumb-dynamic',
-                duration: '10:24',
-                channel: 'AlgoExpert',
-                views: '12K',
-                concepts: [
-                    '🧩 Break down problems into overlapping subproblems',
-                    '📊 Memoization prevents redundant calculations',
-                    '📈 Dynamic programming transforms exponential solutions to polynomial',
-                    '🔄 Recognize when a greedy approach wont work'
-                ],
-                funFact: 'The term "dynamic programming" was chosen to hide mathematical research from government officials!',
-                xpReward: 75
-            },
-            'graphs': {
-                title: 'Graph Algorithms',
-                subtitle: 'Navigate networks like a pro',
-                videoTitle: 'Graph Traversal: BFS, DFS, and Dijkstra\'s Algorithm',
-                videoURL: 'https://www.youtube.com/watch?v=MWSBgTS_GkY',
-                thumbnailKey: 'thumb-graphs',
-                duration: '12:15',
-                channel: 'NetworkNinja',
-                views: '8.5K',
-                concepts: [
-                    '🗺️ Graphs represent relationships between objects',
-                    '🚶 DFS uses a stack, BFS uses a queue',
-                    '🛣️ Shortest path algorithms help optimize routes',
-                    '🔄 Cycle detection prevents infinite loops'
-                ],
-                funFact: 'The Seven Bridges of Königsberg problem started graph theory in 1736!',
-                xpReward: 60
-            },
-            'sorting': {
-                title: 'Sorting Algorithms',
-                subtitle: 'Organize data efficiently',
-                videoTitle: 'Sorting Algorithms Visualized: From Bubble Sort to Quick Sort',
-                videoURL: 'https://www.youtube.com/watch?v=sorting-example',
-                thumbnailKey: 'thumb-sorting',
-                duration: '9:37',
-                channel: 'SortingMaster',
-                views: '22K',
-                concepts: [
-                    '⏱️ Time complexity determines algorithm efficiency',
-                    '🔄 Comparison-based sorts have O(n log n) lower bound',
-                    '🧠 Understanding when to use each algorithm is key',
-                    '📊 In-place sorting saves memory but can be complex'
-                ],
-                funFact: 'Bogosort (randomly shuffling until sorted) has an average time complexity of O(n × n!)!',
-                xpReward: 45
-            },
-            'default': {
-                title: 'Algorithm Basics',
-                subtitle: 'Start your algorithm journey',
-                videoTitle: 'Introduction to Algorithms and Data Structures',
-                videoURL: 'https://www.youtube.com/watch?v=default-example',
-                thumbnailKey: 'youtube-thumb',
-                duration: '7:20',
-                channel: 'CodeCraft',
-                views: '5K',
-                concepts: [
-                    '📝 Algorithms are step-by-step procedures for solving problems',
-                    '🧮 Time and space complexity measure efficiency',
-                    '🔍 Different problems require different algorithmic approaches',
-                    '🔄 Iteration and recursion are two fundamental approaches'
-                ],
-                funFact: 'The word "algorithm" comes from the name of Persian mathematician Al-Khwarizmi!',
-                xpReward: 30
-            }
-        };
-        
-        // Set the current course data based on the topic
-        this.courseData = courseDatabase[this.currentTopic] || courseDatabase['default'];
-        const iframe = document.querySelector("iframe"); // Select the iframe
-        if (iframe) {
-            iframe.src = this.courseData.videoURL; // ✅ Assign safely
-        } else {
-            console.error("Iframe not found");
-        }
-
+    private createSceneSetup() {
+        // Just camera and world setup
+        this.cameras.main.setBounds(0, 0, 800, 2000);
     }
+    private createBackgroundUI() {
+        // Create a background container0xeef6ff 
+        const background = this.add.rectangle(0, 0, 800, 2000, 0x000000).setOrigin(0)
+        
+        // Add loading indicator if needed
+        const loadingText = this.add.text(400, 200, 'Loading course content...', {
+            fontFamily: 'Arial',
+            fontSize: '20px',
+            color: '#000000'
+        }).setOrigin(0.5);
+        
+        // Store reference to remove later
+        this.loadingText = loadingText;
+        
+        // Add back button to return to world map
+        const backButton = this.add.image(50, 30, 'icon-back').setScale(0.6).setInteractive();
+        backButton.on('pointerdown', () => {
+            this.scene.start('WorldScene'); // Return to world map
+        });
+    }
+
+    private createCourseContentUI() {
+        // Remove loading text if exists
+        if (this.loadingText) {
+            this.loadingText.destroy();
+        }
+        
+        // Add course title and subtitle
+        this.add.text(400, 50, this.courseData.title || 'Learning Topic', {
+            fontFamily: 'Arial',
+            fontSize: '28px',
+            color: '#333333',
+            fontStyle: 'bold'
+        }).setOrigin(0.5, 0);
+        
+        this.add.text(400, 90, this.courseData.subtitle || 'Expand your knowledge', {
+            fontFamily: 'Arial',
+            fontSize: '18px',
+            color: '#666666'
+        }).setOrigin(0.5, 0);
+        
+        // Video information
+        this.add.text(400, 380, this.courseData.videoTitle || 'Educational Video', {
+            fontFamily: 'Arial', 
+            fontSize: '20px',
+            color: '#333333',
+            fontStyle: 'bold'
+        }).setOrigin(0.5, 0);
+        
+        // Key concepts section
+        this.add.text(50, 450, 'Key Concepts:', {
+            fontFamily: 'Arial',
+            fontSize: '22px',
+            color: '#333333',
+            fontStyle: 'bold'
+        });
+        
+        // Add concept points
+        if (this.courseData.concepts && Array.isArray(this.courseData.concepts)) {
+            this.courseData.concepts.forEach((concept, index) => {
+                this.add.text(70, 490 + (index * 40), concept, {
+                    fontFamily: 'Arial',
+                    fontSize: '16px',
+                    color: '#444444',
+                    wordWrap: { width: 700 }
+                });
+            });
+        }
+        
+        // Fun fact section
+        const funFactY = 490 + ((this.courseData.concepts?.length || 0) * 40) + 30;
+        this.add.text(50, funFactY, 'Did You Know?', {
+            fontFamily: 'Arial',
+            fontSize: '22px',
+            color: '#333333',
+            fontStyle: 'bold'
+        });
+        
+        this.add.text(70, funFactY + 40, this.courseData.funFact || 'Algorithms are everywhere!', {
+            fontFamily: 'Arial',
+            fontSize: '16px',
+            color: '#444444',
+            fontStyle: 'italic',
+            wordWrap: { width: 700 }
+        });
+        
+        // XP Reward display
+        const xpIcon = this.add.image(70, funFactY + 100, 'icon-xp').setScale(0.5);
+        this.add.text(100, funFactY + 100, `${this.courseData.xpReward || 30} XP`, {
+            fontFamily: 'Arial',
+            fontSize: '20px',
+            color: '#FFA500',
+            fontStyle: 'bold'
+        }).setOrigin(0, 0.5);
+    }
+
+    // private createVideoPlayer() {
+    //     // Create the YouTube iframe element
+    //     const video = document.createElement("iframe");
+    //     video.width = "560";
+    //     video.height = "315";
+    //     video.allow = "autoplay; encrypted-media";
+    //     video.frameBorder = "0";
+    //     video.style.position = "absolute";
+        
+    //     // Set the correct video URL from course data
+    //     if (this.courseData.videoURL) {
+    //         // Convert regular YouTube URL to embed URL if needed
+    //         let embedURL = this.courseData.videoURL;
+    //         if (embedURL.includes('watch?v=')) {
+    //             const videoId = embedURL.split('v=')[1].split('&')[0];
+    //             embedURL = `https://www.youtube.com/embed/${videoId}`;
+    //         }
+    //         video.src = embedURL;
+    //     } else {
+    //         console.error("No video URL found for topic:", this.currentTopic);
+    //     }
+        
+    //     // Append to the DOM using Phaser's add.dom
+    //     const videoElement = this.add.dom(this.scale.width / 2, this.scale.height / 2 - 50, video);
+        
+    //     // Handle fullscreen mode
+    //     this.scale.on('resize', (gameSize: { width: number, height: number }) => {
+    //         videoElement.setPosition(gameSize.width / 2, gameSize.height / 2);
+    //         video.width = `${gameSize.width * 0.5}`;
+    //         video.height = `${gameSize.height * 0.3}`;
+    //     });
+    // }
+    
+//     private async loadCourseData() {
+//         // Define course data for different topics
+//         // const courseDatabase = {
+//         //     'bst': {
+//         //         title: 'Binary Search Trees',
+//         //         subtitle: 'Level up your tree traversal skills!',
+//         //         videoTitle: 'Binary Search Trees: From Theory to Implementation',
+//         //         videoURL: 'https://www.youtube.com/watch?v=MWSBgTS_GkY',
+//         //         thumbnailKey: 'thumb-bst',
+//         //         duration: '8:42',
+//         //         channel: 'Tree Traversal Academy',
+//         //         views: '15K',
+//         //         concepts: [
+//         //             '🌳 A BST is like a family tree where smaller values go left',
+//         //             '🔍 Search operations are O(log n) on average - super fast!',
+//         //             '⚖️ Balanced trees are happy trees - they perform better',
+//         //             '🧩 Insert and delete operations preserve the BST property'
+//         //         ],
+//         //         funFact: 'The worst-case BST is just a linked list. Sad but true!',
+//         //         xpReward: 50
+//         //     },
+//         //     'dynamic': {
+//         //         title: 'Dynamic Programming',
+//         //         subtitle: 'Master the art of optimal substructure',
+//         //         videoTitle: 'Dynamic Programming: From Fibonacci to Advanced Algorithms',
+//         //         videoURL: 'https://www.youtube.com/watch?v=MWSBgTS_GkY',
+//         //         thumbnailKey: 'thumb-dynamic',
+//         //         duration: '10:24',
+//         //         channel: 'AlgoExpert',
+//         //         views: '12K',
+//         //         concepts: [
+//         //             '🧩 Break down problems into overlapping subproblems',
+//         //             '📊 Memoization prevents redundant calculations',
+//         //             '📈 Dynamic programming transforms exponential solutions to polynomial',
+//         //             '🔄 Recognize when a greedy approach wont work'
+//         //         ],
+//         //         funFact: 'The term "dynamic programming" was chosen to hide mathematical research from government officials!',
+//         //         xpReward: 75
+//         //     },
+//         //     'graphs': {
+//         //         title: 'Graph Algorithms',
+//         //         subtitle: 'Navigate networks like a pro',
+//         //         videoTitle: 'Graph Traversal: BFS, DFS, and Dijkstra\'s Algorithm',
+//         //         videoURL: 'https://www.youtube.com/watch?v=MWSBgTS_GkY',
+//         //         thumbnailKey: 'thumb-graphs',
+//         //         duration: '12:15',
+//         //         channel: 'NetworkNinja',
+//         //         views: '8.5K',
+//         //         concepts: [
+//         //             '🗺️ Graphs represent relationships between objects',
+//         //             '🚶 DFS uses a stack, BFS uses a queue',
+//         //             '🛣️ Shortest path algorithms help optimize routes',
+//         //             '🔄 Cycle detection prevents infinite loops'
+//         //         ],
+//         //         funFact: 'The Seven Bridges of Königsberg problem started graph theory in 1736!',
+//         //         xpReward: 60
+//         //     },
+//         //     'sorting': {
+//         //         title: 'Sorting Algorithms',
+//         //         subtitle: 'Organize data efficiently',
+//         //         videoTitle: 'Sorting Algorithms Visualized: From Bubble Sort to Quick Sort',
+//         //         videoURL: 'https://www.youtube.com/watch?v=sorting-example',
+//         //         thumbnailKey: 'thumb-sorting',
+//         //         duration: '9:37',
+//         //         channel: 'SortingMaster',
+//         //         views: '22K',
+//         //         concepts: [
+//         //             '⏱️ Time complexity determines algorithm efficiency',
+//         //             '🔄 Comparison-based sorts have O(n log n) lower bound',
+//         //             '🧠 Understanding when to use each algorithm is key',
+//         //             '📊 In-place sorting saves memory but can be complex'
+//         //         ],
+//         //         funFact: 'Bogosort (randomly shuffling until sorted) has an average time complexity of O(n × n!)!',
+//         //         xpReward: 45
+//         //     },
+//         //     'default': {
+//         //         title: 'Algorithm Basics',
+//         //         subtitle: 'Start your algorithm journey',
+//         //         videoTitle: 'Introduction to Algorithms and Data Structures',
+//         //         videoURL: 'https://www.youtube.com/watch?v=default-example',
+//         //         thumbnailKey: 'youtube-thumb',
+//         //         duration: '7:20',
+//         //         channel: 'CodeCraft',
+//         //         views: '5K',
+//         //         concepts: [
+//         //             '📝 Algorithms are step-by-step procedures for solving problems',
+//         //             '🧮 Time and space complexity measure efficiency',
+//         //             '🔍 Different problems require different algorithmic approaches',
+//         //             '🔄 Iteration and recursion are two fundamental approaches'
+//         //         ],
+//         //         funFact: 'The word "algorithm" comes from the name of Persian mathematician Al-Khwarizmi!',
+//         //         xpReward: 30
+//         //     }
+//         // };
+
+//         // const courseDataJson = await generateCourseData(this.currentTopic);
+//         // console.log(courseDataJson)
+//         // this.courseData = JSON.parse(courseDataJson);
+//         // console.log(this.courseData)
+
+//    let  courseDataJson = await generateCourseData(this.currentTopic);
+//         console.log("Raw response:", courseDataJson);
+        
+//         // Strip out markdown code blocks if present
+//         if (courseDataJson.includes("```")) {
+//             courseDataJson = courseDataJson.replace(/```json\s*/g, "");
+//             courseDataJson = courseDataJson.replace(/```\s*/g, "");
+//         }
+        
+//         // Parse the JSON response
+//         this.courseData = JSON.parse(courseDataJson);
+//         console.log("Parsed data:", this.courseData);
+
+
+        
+//         // Set the current course data based on the topic
+//         // this.courseData = courseDatabase[this.currentTopic] || courseDatabase['default'];
+//         const iframe = document.querySelector("iframe"); // Select the iframe
+//         if (iframe) {
+//             iframe.src = this.courseData.videoURL; // ✅ Assign safely
+//         } else {
+//             console.error("Iframe not found");
+//         }
+
+//     }
+
+private async loadCourseData() {
+    try {
+        let courseDataJson = await generateCourseData(this.currentTopic);
+        console.log("Raw response:", courseDataJson);
+        
+        // Strip out markdown code blocks if present
+        if (courseDataJson.includes("```")) {
+            courseDataJson = courseDataJson.replace(/```json\s*/g, "");
+            courseDataJson = courseDataJson.replace(/```\s*/g, "");
+        }
+        
+        // Parse the JSON response
+        this.courseData = JSON.parse(courseDataJson);
+        console.log("Parsed data:", this.courseData);
+        
+        // Emit an event to notify that course data is loaded
+        this.events.emit('courseDataLoaded');
+        
+    } catch (error) {
+        console.error(`Error loading course data: ${error}`);
+        // Set default fallback data
+        this.courseData = this.getDefaultCourseData();
+        this.events.emit('courseDataLoaded');
+    }
+}
+
+private createVideoPlayer() {
+    // Create the YouTube iframe element
+    const video = document.createElement("iframe");
+    video.width = "560";
+    video.height = "315";
+    video.allow = "autoplay; encrypted-media";
+    video.frameBorder = "0";
+    video.style.position = "absolute";
+
+    console.log(this.courseData.videoURL)
+    
+    // Set the correct video URL from course data
+    if (this.courseData && this.courseData.videoURL) {
+        // Convert regular YouTube URL to embed URL if needed
+        let embedURL = this.courseData.videoURL;
+        if (embedURL.includes('watch?v=')) {
+            const videoId = embedURL.split('v=')[1].split('&')[0];
+            // embedURL = `https://www.youtube.com/embed/${videoId}`;
+            embedURL = this.courseData.videoURL;
+        }
+        video.src = embedURL;
+    } else {
+        console.error("No video URL found for topic:", this.currentTopic);
+        // Use a default URL if needed
+        video.src = "https://www.youtube.com/embed/dQw4w9WgXcQ";
+    }
+    
+    // Append to the DOM using Phaser's add.dom
+    const videoElement = this.add.dom(this.scale.width / 2, this.scale.height / 2 - 50, video);
+    
+    // Handle fullscreen mode
+    this.scale.on('resize', (gameSize: { width: number, height: number }) => {
+        videoElement.setPosition(gameSize.width / 2, gameSize.height / 2);
+        video.width = `${gameSize.width * 0.5}`;
+        video.height = `${gameSize.height * 0.3}`;
+    });
+}
+
+// Add a default data method in case API fails
+private getDefaultCourseData() {
+    return {
+        title: 'Algorithm Basics',
+        subtitle: 'Start your algorithm journey',
+        videoTitle: 'Introduction to Algorithms and Data Structures',
+        videoURL: 'https://www.youtube.com/watch?v=kHi1DUhp9kM',
+        thumbnailKey: 'youtube-thumb',
+        duration: '7:20',
+        channel: 'CodeCraft',
+        views: '5K',
+        concepts: [
+            '📝 Algorithms are step-by-step procedures for solving problems',
+            '🧮 Time and space complexity measure efficiency',
+            '🔍 Different problems require different algorithmic approaches',
+            '🔄 Iteration and recursion are two fundamental approaches'
+        ],
+        funFact: 'The word "algorithm" comes from the name of Persian mathematician Al-Khwarizmi!',
+        xpReward: 30
+    };
+}
 
     private createDynamicLearningScene() {
         // Create a clean background
