@@ -14,9 +14,12 @@ export class PreloadScene extends Phaser.Scene {
     this.createLoadingScreen();
 
     // Load town map (using the local asset that's already uploaded)
+    this.load.image('player-img', 'player.png');
+    this.load.image("player", "/assets/player.png");
     this.load.image('town-map', '/lovable-uploads/2176030f-7feb-4f01-b180-e2b5ee6f6016.png');
-    this.load.image('player', '/assets/player.png');
+    // this.load.image('player', 'player.png');
     this.load.image('battle', '/lovable-uploads/battle.png');
+    // this.load.image('player', 'og-image.png');
     
     
     // Create a basic player sprite with a simple color - don't rely on external URLs
