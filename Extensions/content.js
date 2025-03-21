@@ -1,16 +1,16 @@
-// content.js - Runs on LeetCode problem pages
+
 (async function () {
-    // Function to extract problem description
+    
     function getProblemDescription() {
         const problemDiv = document.querySelector("div.elfjS[data-track-load='description_content']");
         return problemDiv ? problemDiv.innerText.trim() : null;
     }
     
-    // Fetch problem description and send to backend
+    
     async function sendProblemDescription() {
         const description = getProblemDescription();
         if (description) {
-            const processedData = await firecrawl.process(description); // Firecrawl cleaning
+            const processedData = await firecrawl.process(description);
             fetch('http://your-backend.com/scrape-problem', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
