@@ -42,13 +42,17 @@ export class WorldScene extends Phaser.Scene {
   private showDebugBounds: boolean = true;
   private graphics: Phaser.GameObjects.Graphics;
 
+  private greenGraphics:any;
+  private redGraphics:any;
+  private yellowGraphics:any;
+
     private npcsNerd: Array<any> = [];
     private interactionZone!: Phaser.GameObjects.Zone;
     private interactionKey!: Phaser.Input.Keyboard.Key;
     private interactionPrompt!: Phaser.GameObjects.Container;
 
   // private userCoordinates: { x: number; y: number } = { x: 1360, y: 2750 };
-  private userCoordinates: { x: number; y: number } = { x: 600, y: 600 };
+  private userCoordinates: { x: number; y: number } = { x: 1241.625240354536, y: 1148.0498440352615 };
   
   constructor() {
     super('WorldScene');
@@ -360,6 +364,9 @@ private getNPCDialog(topic: string): string {
     // Set up player character
     this.createPlayer();
 
+    this.greenGraphics = this.add.graphics();
+    this.redGraphics = this.add.graphics();
+    this.yellowGraphics = this.add.graphics(); // Add this line
     
     // Set up camera
     this.setupCamera();
@@ -379,7 +386,13 @@ private getNPCDialog(topic: string): string {
 
     this.graphics = this.add.graphics();
         this.randomizeGrassZones();
+        this.randomRedGrass();
+        this.randomYellowGrass(); // Add this line
+
+
     this.graphics = this.add.graphics();
+
+    
     this.graphics.fillStyle(0x00FF00, 1); // Green
       this.grassZones.forEach(zone => {
           this.graphics.fillRect(zone.x, zone.y, zone.width, zone.height);
@@ -424,45 +437,86 @@ private getNPCDialog(topic: string): string {
   }  
 
   randomizeGrassZones() {
-    // Clear previous graphics
-    this.graphics.clear();
-
-    // Generate 2-3 random grass zones
+    // Clear the green graphics specifically
+    this.greenGraphics.clear();
+  
+    // Generate random grass zones
     this.grassZones = [];
     for (let i = 0; i < Phaser.Math.Between(2, 20); i++) {
-        let x = Phaser.Math.Between(875.3333333333337 , 1575.3333333333296);
-        let y = Phaser.Math.Between(1468.4136008177218, 1868.4136008177218);
-        let width = Phaser.Math.Between(40, 80);
-        let height = Phaser.Math.Between(40, 80);
-
-        this.grassZones.push({ x, y, width, height });
-    }
-
-    for (let i = 0; i < Phaser.Math.Between(2, 20); i++) {
-      let x = Phaser.Math.Between(1062.8595479208984 , 1346.1928812542292);
-      let y = Phaser.Math.Between(1026.6446609406735, 2142.666666666666);
+      let x = Phaser.Math.Between(875.3333333333337, 1575.3333333333296);
+      let y = Phaser.Math.Between(1468.4136008177218, 1868.4136008177218);
       let width = Phaser.Math.Between(40, 80);
       let height = Phaser.Math.Between(40, 80);
-
+  
       this.grassZones.push({ x, y, width, height });
     }
-    for (let i = 0; i < Phaser.Math.Between(2, 20); i++) {
-      let x = Phaser.Math.Between(32, 232.0000000000001);
-      let y = Phaser.Math.Between(1385.5152117245555, 2087.0304234491214);
-      let width = Phaser.Math.Between(40, 80);
-      let height = Phaser.Math.Between(40, 80);
-
-      this.grassZones.push({ x, y, width, height });
-    }
-
-    // Draw new grass zones
-    this.graphics.fillStyle(0x00FF00, 1);
+  
+    // Add other zones as you have them...
+  
+    // Use the green graphics object to draw green grass
+    this.greenGraphics.fillStyle(0x00FF00, 1.0);
+    
     this.grassZones.forEach(zone => {
-        this.graphics.fillRect(zone.x, zone.y, zone.width, zone.height);
+      this.greenGraphics.fillRect(zone.x, zone.y, zone.width, zone.height);
     });
-
-    console.log("Grass zones randomized:", this.grassZones);
-}
+  
+    console.log("Green grass zones randomized:", this.grassZones);
+  }
+  randomYellowGrass() {
+    // Clear the red graphics specifically
+    this.yellowGraphics.clear();
+  
+    // Generate random grass zones for red grass - use a different array to avoid conflicts
+    let yellowGrassZone = [];
+    for (let i = 0; i < Phaser.Math.Between(2, 20); i++) {
+      let x = Phaser.Math.Between(1163.5922317655475,1389.6032346285429);
+      let y = Phaser.Math.Between(644.4246036807261, 794.4246036807268);
+      let width = Phaser.Math.Between(40, 80);
+      let height = Phaser.Math.Between(40, 80);
+  
+      yellowGrassZone.push({ x, y, width, height });
+    }
+  
+    // Add other zones as you have them...
+  
+    // Set red color with full opacity
+    this.yellowGraphics.fillStyle(0xFFFF00, 1.0); 
+    
+    // Draw the red grass zones using the red graphics object
+    yellowGrassZone.forEach(zone => {
+      this.yellowGraphics.fillRect(zone.x, zone.y, zone.width, zone.height);
+    });
+  
+    console.log("Red grass zones randomized:", yellowGrassZone);
+  }
+  
+  randomRedGrass() {
+    // Clear the red graphics specifically
+    this.redGraphics.clear();
+  
+    // Generate random grass zones for red grass - use a different array to avoid conflicts
+    let redGrassZones = [];
+    for (let i = 0; i < Phaser.Math.Between(2, 20); i++) {
+      let x = Phaser.Math.Between(862.3333333333337, 988.3333333333296);
+      let y = Phaser.Math.Between(249.4136008177218, 515.4136008177218);
+      let width = Phaser.Math.Between(40, 80);
+      let height = Phaser.Math.Between(40, 80);
+  
+      redGrassZones.push({ x, y, width, height });
+    }
+  
+    // Add other zones as you have them...
+  
+    // Set red color with full opacity
+    this.redGraphics.fillStyle(0xFF0000, 1.0);
+    
+    // Draw the red grass zones using the red graphics object
+    redGrassZones.forEach(zone => {
+      this.redGraphics.fillRect(zone.x, zone.y, zone.width, zone.height);
+    });
+  
+    console.log("Red grass zones randomized:", redGrassZones);
+  }
 
 
   update(time: number, delta: number) {
@@ -546,6 +600,15 @@ private getNPCDialog(topic: string): string {
 
     // Fence
     this.createObstacleRect(450, 0, 50, 500);
+    this.createObstacleRect(730, 240, 50, 500);
+    this.createObstacleRect(790, 100, 200, 10);
+    this.createObstacleRect(790, 180, 200, 10);
+    this.createObstacleRect(1000, 0, 10, 95);
+    this.createObstacleRect(1000, 200, 10, 110);
+    this.createObstacleRect(1002, 314.30615732761544, 190, 10);
+    this.createObstacleRect(1210.8543776411702, 378.63949066094875, 260, 10);
+    this.createObstacleRect(1210.8543776411702, 318.63949066094875, 10, 50);
+    this.createObstacleRect(1484.6666666666674, 406.08026748439414, 10, 100);
     this.createObstacleRect(670, 1650.6336580776644, 130,140);
     this.createObstacleRect(170, 1430.6336580776644, 60,600);
     this.createObstacleRect(170, 1430.6336580776644, 400,60);
@@ -553,6 +616,15 @@ private getNPCDialog(topic: string): string {
     this.createObstacleRect(810, 960, 400, 40);
     this.createObstacleRect(810, 1180, 400, 40);
     this.createObstacleRect(0, 2160.6336580776644, 800,60);
+    this.createObstacleRect(1230.625240354536, 871.5980643488132, 145,20);
+    this.createObstacleRect(1371.680254669522, 870.0168354462705, 20,140);
+    this.createObstacleRect(1430.3469213361886, 1020.1572875253744,20, 280);
+    this.createObstacleRect(1380.3469213361882, 1020.1572875253744,50, 20);
+    this.createObstacleRect(1380.3469213361882, 1289.7165107019268,50, 20);
+    this.createObstacleRect(1060.2588984322117, 1289.7165107019268,160, 20);
+    this.createObstacleRect(1060.2588984322117, 1302.0828526242512,20, 160);
+    this.createObstacleRect(960.9779942740058, 871.5980643488132, 430,20);
+    this.createObstacleRect(963.1734606680948 , 891.5980643488132, 20, -300);
 
     // Trees
     this.createObstacleRect(800, 2200, 400,300);
@@ -586,33 +658,36 @@ private getNPCDialog(topic: string): string {
     //USING GEMINI API
     ///GENERATE RANDOM HINTS RELATED TO THE COMMENTS WE HAVE PUT
     // NPC near the main house (1300, 1510)
-    this.createNPC(1250, 1460, 'Mayor', "Just like how a dictionary allows quick lookups, HashMaps in programming provide efficient key-value pair searching!");
+    this.createNPC(1250, 1460, 'Mayor', "Just like how a dictionary allows quick lookups, HashMaps in programming provide efficient key-value pair searching!",0);
     
     // NPC near the second house (880, 1510)
-    this.createNPC(830, 1460, 'Shopkeeper', 'Hello traveler! I sell all sorts of items. Would you like to see my wares?');
+    //HINT RELATED TO BINARY SEARCH
+    this.createNPC(830, 1460, 'Shopkeeper', "Finding the right item in a shop is like Binary Search—efficient and fast when everything is sorted!", 1);
     
-    // NPC near the third house (380, 1580)
-    this.createNPC(330, 1530, 'Farmer', 'The crops are growing well this season. Make sure to visit our local market!');
+    // HINT RELATED TO BINARY TREES IN DSA
+    this.createNPC(330, 1530, 'Farmer', "A well-structured farm, like a Binary Tree, ensures everything is organized for quick access and growth!", 2);
     
-    // NPC near fence area (450, 0)
-    this.createNPC(400, 50, 'Guard', 'Be careful wandering outside the town. There are strange creatures in the wilderness.');
+    // HINT RELATED TO STACKS IN DSA
+    this.createNPC(400, 50, 'Guard', "Just like a stack, guards handle threats in a Last-In-First-Out manner—dealing with the most recent danger first!", 3);
     
     // NPC near trees (800, 2200)
-    this.createNPC(750, 2150, 'Woodcutter', 'The forest provides us with timber and shelter. Respect nature, traveler.');
+    // A HINT RELATED TO LINKED LISTS IN DSA
+    this.createNPC(750, 2150, 'Woodcutter', "A linked list is like a chain of trees in a forest—each tree (node) is connected to the next!", 4);
     
-    // NPC near the bottom of the map
-    this.createNPC(1000, 2700, 'Fisher', 'The lake has the best fish you\'ll ever taste. I\'ve been fishing here for decades.');
+    // A HINT RELATED TO THE CODING JOURNEY AHEAD
+    this.createNPC(1000, 2700, 'Fisher', '"Learning to code is like fishing—you need patience, the right tools, and practice to master it!"', 5);
     
     // NPC near the mountain (470, 800)
-    this.createNPC(420, 750, 'Miner', 'The mountains contain valuable minerals. We\'ve been mining here for generations.');
+    this.createNPC(420, 750, 'Miner', 'The mountains contain valuable minerals. We\'ve been mining here for generations.', 6);
     
     // NPC on the path (1000, 2000)
-    this.createNPC(1000, 2000, 'Traveler', 'I\'m just passing through. This town has such friendly people!');
+    //A HINT RELATED TO ARRAYS IN DSA
+    this.createNPC(1000, 2000, 'Traveler', "An array is like a road—you can travel to any point directly if you know the index (position)!", 7);
   }
 
-  private createNPC(x: number, y: number, name: string, dialog: string, educationalContent?: any[]) {
-    // Create a static sprite for the NPC
-    const npc = this.physics.add.staticSprite(x, y, 'player');
+  private createNPC(x: number, y: number, name: string, dialog: string, frame: number = 0, educationalContent?: any[]) {
+    // Create a static sprite for the NPC using the correct texture key 'nerdnpecs'
+    const npc = this.physics.add.staticSprite(x, y, 'nerdnpecs', frame);
     npc.setScale(2);
     npc.setDepth(5); // Ensure NPCs are above the background but below the player
     
@@ -625,38 +700,27 @@ private getNPCDialog(topic: string): string {
     npc.setData('name', name);
     npc.setData('dialog', dialog);
     
-    // Randomly select a direction for the NPC to face
-    const directions = ['up', 'down', 'left', 'right'];
-    const randomDirection = directions[Math.floor(Math.random() * directions.length)];
-    
-    try {
-      npc.play(`player-idle-${randomDirection}`);
-      npc.setData('direction', randomDirection);
-    } catch (e) {
-      console.error(`Animation player-idle-${randomDirection} not found`, e);
-    }
-    
-    // Set correct collision body size
+    // Set correct collision body size for the 60x60 sprite
     npc.setSize(12, 12);
-    npc.setOffset(2, 16);
+    npc.setOffset(24, 40); // Adjusted offset for the larger sprite
     
     // Add debug bounds to NPCs if debug is enabled
     if (this.showDebugBounds) {
-        const bounds = npc.getBounds();
-        const debugRect = this.add.rectangle(
-            bounds.x, 
-            bounds.y, 
-            bounds.width, 
-            bounds.height, 
-            0x000000, 
-            0
-        );
-        debugRect.setStrokeStyle(2, 0x00ff00); // Green border for NPCs
-        npc.setData('debugRect', debugRect);
+      const bounds = npc.getBounds();
+      const debugRect = this.add.rectangle(
+        bounds.x, 
+        bounds.y, 
+        bounds.width, 
+        bounds.height, 
+        0x000000, 
+        0
+      );
+      debugRect.setStrokeStyle(2, 0x00ff00); // Green border for NPCs
+      npc.setData('debugRect', debugRect);
     }
     
     this.npcs.add(npc);
-    console.log(`Created NPC ${name} at ${x}, ${y}`);
+    console.log(`Created NPC ${name} at ${x}, ${y} with frame ${frame}`);
     return npc;
   }
 
@@ -869,6 +933,72 @@ private getNPCDialog(topic: string): string {
         });
       }
     }
+
+    if (this.interactionKey.isDown && !this.messageVisible) {
+      const playerBounds = this.player.getBounds();
+      
+      this.npcs.getChildren().forEach((child) => {
+        const npc = child as Phaser.Physics.Arcade.Sprite;
+        const npcBounds = npc.getBounds();
+        
+        // Check if player is close enough to interact
+        if (Phaser.Geom.Rectangle.Overlaps(playerBounds, npcBounds)) {
+          // Save the current frame and texture before interaction
+          const currentFrame = npc.frame.name;
+          const currentTexture = npc.texture.key;
+          
+          // Handle the interaction
+          this.handleNPCInteraction(npc);
+          
+          // Ensure the NPC maintains its appearance
+          npc.setTexture(currentTexture, currentFrame);
+        }
+      });
+    }
+  }
+
+  private handleNPCInteraction(npc: Phaser.Physics.Arcade.Sprite) {
+    // Get the NPC's data
+    const name = npc.getData('name');
+    const dialog = npc.getData('dialog');
+    const frame = npc.frame.name; // Store the current frame number
+    
+    // Show the dialog message
+    this.showMessage({
+      text:"it should be working-handle interaction",
+      color:"#ffff"
+    });
+    
+    // Store the original texture and frame to restore after interaction
+    const originalTexture = npc.texture.key;
+    
+    // If you're doing any animation or visual change during interaction,
+    // make sure to restore the NPC's appearance afterward
+    
+    // Example of how you might animate the NPC during interaction:
+    // this.tweens.add({
+    //   targets: npc,
+    //   scaleX: 2.2, // Slightly larger
+    //   scaleY: 2.2,
+    //   duration: 200,
+    //   yoyo: true, // Return to original scale
+    //   onComplete: () => {
+    //     // Ensure NPC returns to original appearance
+    //     npc.setTexture(originalTexture, frame);
+    //   }
+    // });
+    
+    // Log the interaction for debugging
+    console.log(`Interacted with ${name}, using texture: ${originalTexture}, frame: ${frame}`);
+    
+    // If the NPC resets to a different sprite, force it back to the correct one
+    // This is the key fix - add this to any interaction method
+    setTimeout(() => {
+      if (npc.texture.key !== originalTexture || npc.frame.name !== frame) {
+        console.log(`Restoring NPC ${name} to texture: ${originalTexture}, frame: ${frame}`);
+        npc.setTexture(originalTexture, frame);
+      }
+    }, 100); // Small delay to ensure it catches any changes
   }
 
   private isNearWater(x: number, y: number) {
