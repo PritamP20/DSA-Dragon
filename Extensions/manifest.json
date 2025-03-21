@@ -1,26 +1,19 @@
 {
   "manifest_version": 3,
-  "name": "LeetCode Helper",
+  "name": "LeetCode Code Extractor",
   "version": "1.0",
-  "description": "Enhance your LeetCode experience with AI-powered insights!",
-  "permissions": ["activeTab", "storage"],
-  "host_permissions": ["https://leetcode.com/problems/*"],
+  "permissions": ["scripting", "storage", "activeTab"],
+  "host_permissions": ["https://leetcode.com/*"],
   "background": {
-      "service_worker": "background.js"
+    "service_worker": "background.js"
   },
   "action": {
-      "default_popup": "popup.html",
-      "default_icon": {
-          "16": "icons/icon.webp",
-          "48": "icons/icon.webp",
-          "128": "icons/icon.webp"
-      }
+    "default_popup": "index.html"
   },
   "content_scripts": [
-      {
-          "matches": ["https://leetcode.com/problems/*"],
-          "js": ["content.js"],
-          "run_at": "document_end"
-      }
+    {
+      "matches": ["https://leetcode.com/*"],
+      "js": ["content.js"]
+    }
   ]
 }
