@@ -75,7 +75,21 @@ Return ONLY valid JSON with no additional text or explanation.
 };
 
 
+const npcDialogues = async(topic)=>{
+  try{
+    const prompt= `You are a 2D npc character of a game, generate a random fact about the ${topic} in a one short line.
+    Example: Just like how a dictionary allows quick lookups, HashMaps in programming provide efficient key-value pair searching!
+    `;
+    const result = await model.generateContent(prompt);
+  return result.response.text();
+  }
+  catch(err){
+    console.log(`Error generating Leetcode Question: ${err.message}`);
+    console.log("All env vars:", import.meta.env);
+    return null;
+  }
+};
 
 
 
-export { generateCourseData , generateLeetCodeQuestion};
+export { generateCourseData , generateLeetCodeQuestion, npcDialogues};

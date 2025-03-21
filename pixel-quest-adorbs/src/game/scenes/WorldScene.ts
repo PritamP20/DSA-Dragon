@@ -411,7 +411,11 @@ private getNPCDialog(topic: string): string {
               this.player.y > zone.y && this.player.y < zone.y + zone.height) {
               
               console.log('Grass collision detected! Switching to LeetCodeQuestScene...');
-              this.scene.start('LeetCodeQuestScene');
+              // this.scene.start('LeetCodeQuestScene');
+              this.scene.start('LeetCodeQuestScene', { 
+                topic: "BST", // You can set this dynamically based on game state
+                difficulty: "easy" // You can set this dynamically based on player progress
+            });
               this.userCoordinates.x = this.player.x +90;
               this.userCoordinates.y = this.player.y;
               break;

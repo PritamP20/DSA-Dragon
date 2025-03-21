@@ -1,11 +1,15 @@
 import {generateLeetCodeQuestion} from "../../components/api/courseDataApi.js";
-
-
 export class LeetCodeQuestScene extends Phaser.Scene {
     private battleImage!: Phaser.GameObjects.Image;
     private mapScale: number = 0.7;
     private topic: string;
     private difficulty: string;
+    private questionData:any={};
+    private scrollContainer: Phaser.GameObjects.Container;
+    private mask: Phaser.Display.Masks.GeometryMask;
+    private scrollableHeight: number = 0;
+    private scrolling: boolean = false;
+    private lastY: number = 0;
     
     constructor(config) {
         super({ key: 'LeetCodeQuestScene' });
@@ -61,8 +65,17 @@ export class LeetCodeQuestScene extends Phaser.Scene {
     private async loadQuestion(loadingText) {
         try {
             // Call the API to generate a question
-            const questionJSON = await generateLeetCodeQuestion(this.topic, this.difficulty);
+            let questionJSON = await generateLeetCodeQuestion(this.topic, this.difficulty);
+
+            if (questionJSON.includes("```")) {
+                questionJSON = questionJSON.replace(/```json\s*/g, "");
+                questionJSON = questionJSON.replace(/```\s*/g, "");
+            }
+
+            
             const questionData = JSON.parse(questionJSON);
+            console.log(questionData)
+            console.log("Parsed data:", this.questionData);
             
             // Remove loading text
             loadingText.destroy();
@@ -90,10 +103,41 @@ export class LeetCodeQuestScene extends Phaser.Scene {
             0.9
         );
         
-        // Add panel header
+        const panelWidth = overlay.width;
+        const panelHeight = overlay.height;
+        const panelX = overlay.x - panelWidth / 2;
+        const panelY = overlay.y - panelHeight / 2;
+        
+        // Create a mask for the scrollable area - using black instead of white
+        const maskGraphics = this.add.graphics();
+        maskGraphics.fillStyle(0x000000); // Changed to black
+        maskGraphics.fillRect(
+            panelX + 20, 
+            panelY + 100, // Start below the header
+            panelWidth - 40, 
+            panelHeight - 170 // Leave space for buttons at bottom
+        );
+        
+        // Create a background for the scrollable area (black)
+        const scrollBg = this.add.rectangle(
+            panelX + 20 + (panelWidth - 40) / 2,
+            panelY + 100 + (panelHeight - 170) / 2,
+            panelWidth - 40,
+            panelHeight - 170,
+            0x111111
+        );
+        
+        // The mask is still needed for clipping
+        this.mask = new Phaser.Display.Masks.GeometryMask(this, maskGraphics);
+        
+        // Create scrollable container
+        this.scrollContainer = this.add.container(panelX + 30, panelY + 100);
+        this.scrollContainer.setMask(this.mask);
+        
+        // Add panel header (outside scroll container)
         const headerText = this.add.text(
             this.scale.width / 2,
-            overlay.y - overlay.height / 2 + 30,
+            panelY + 30,
             'LeetCode Challenge',
             { fontSize: '24px', color: '#ffffff', fontStyle: 'bold' }
         ).setOrigin(0.5);
@@ -106,7 +150,7 @@ export class LeetCodeQuestScene extends Phaser.Scene {
         };
         const difficultyColor = difficultyColors[questionData.difficulty] || '#4CAF50';
         
-        // Add question title with difficulty indicator
+        // Add question title with difficulty indicator (outside scroll container)
         const questionTitle = this.add.text(
             this.scale.width / 2,
             headerText.y + 50,
@@ -114,7 +158,7 @@ export class LeetCodeQuestScene extends Phaser.Scene {
             { fontSize: '20px', color: difficultyColor, fontStyle: 'bold' }
         ).setOrigin(0.5);
         
-        // Add difficulty badge
+        // Add difficulty badge (outside scroll container)
         const difficultyBadge = this.add.text(
             questionTitle.x + questionTitle.width / 2 + 20,
             questionTitle.y,
@@ -127,13 +171,14 @@ export class LeetCodeQuestScene extends Phaser.Scene {
             }
         ).setOrigin(0, 0.5);
         
-        // Add question description
+        // Add question description (inside scroll container)
         const questionText = this.add.text(
-            overlay.x - overlay.width / 2 + 30,
-            questionTitle.y + 40,
+            0,
+            0,
             questionData.description,
-            { fontSize: '16px', color: '#ffffff', wordWrap: { width: overlay.width - 60 } }
+            { fontSize: '16px', color: '#ffffff', wordWrap: { width: panelWidth - 60 } }
         );
+        this.scrollContainer.add(questionText);
         
         // Format example
         const example = 
@@ -143,26 +188,47 @@ export class LeetCodeQuestScene extends Phaser.Scene {
             `Explanation: ${questionData.example.explanation}`;
         
         const exampleText = this.add.text(
-            questionText.x,
-            questionText.y + questionText.height + 30,
+            0,
+            questionText.height + 30,
             example,
-            { fontSize: '16px', color: '#FFD700', wordWrap: { width: overlay.width - 60 } }
+            { fontSize: '16px', color: '#FFD700', wordWrap: { width: panelWidth - 60 } }
         );
+        this.scrollContainer.add(exampleText);
+        
+        let lastY = exampleText.y + exampleText.height + 20;
         
         // Add tags if available
         if (questionData.tags && questionData.tags.length > 0) {
             const tagsText = this.add.text(
-                questionText.x,
-                exampleText.y + exampleText.height + 20,
+                0,
+                lastY,
                 `Tags: ${Array.isArray(questionData.tags) ? questionData.tags.join(', ') : questionData.tags}`,
                 { fontSize: '14px', color: '#9E9E9E' }
             );
+            this.scrollContainer.add(tagsText);
+            lastY = tagsText.y + tagsText.height + 20;
         }
         
-        // Add buttons
+        // Calculate total scrollable height
+        this.scrollableHeight = lastY;
+        
+        // Add scroll indicator if content exceeds visible area
+        const maskHeight = panelHeight-170;
+        if (this.scrollableHeight > maskHeight) {
+            const scrollIndicator = this.add.text(
+                panelX + panelWidth - 30,
+                panelY + 120,
+                '↕️ Scroll',
+                { fontSize: '14px', color: '#9E9E9E' }
+            ).setOrigin(1, 0);
+        }
+        
+        // Add buttons (outside scroll container)
+        const buttonsY = panelY + panelHeight - 40;
+        
         const solveButton = this.add.rectangle(
             this.scale.width / 2 - 100,
-            overlay.y + overlay.height / 2 - 40,
+            buttonsY,
             180,
             50,
             0x4CAF50
@@ -177,7 +243,7 @@ export class LeetCodeQuestScene extends Phaser.Scene {
         
         const skipButton = this.add.rectangle(
             this.scale.width / 2 + 100,
-            solveButton.y,
+            buttonsY,
             120,
             50,
             0x607D8B
@@ -194,7 +260,7 @@ export class LeetCodeQuestScene extends Phaser.Scene {
         if (questionData.hints && questionData.hints.length > 0) {
             const hintButton = this.add.rectangle(
                 this.scale.width / 2,
-                solveButton.y - 70,
+                buttonsY - 60,
                 120,
                 40,
                 0x2196F3
@@ -229,7 +295,7 @@ export class LeetCodeQuestScene extends Phaser.Scene {
                             color: '#FFEB3B', 
                             backgroundColor: '#333333',
                             padding: { x: 10, y: 5 },
-                            wordWrap: { width: overlay.width * 0.6 } 
+                            wordWrap: { width: panelWidth * 0.6 } 
                         }
                     ).setOrigin(0.5, 0);
                     
@@ -264,6 +330,71 @@ export class LeetCodeQuestScene extends Phaser.Scene {
 
         this.input.keyboard.on('keydown-SPACE', () => {
             skipButton.emit('pointerdown');
+        });
+        
+        // Set up scrolling
+        this.setupScrolling(maskHeight);
+    }
+    
+    private setupScrolling(maskHeight) {
+        // Mouse wheel scrolling
+        this.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
+            if (this.scrollableHeight > maskHeight) {
+                const newY = Phaser.Math.Clamp(
+                    this.scrollContainer.y - deltaY,
+                    maskHeight - this.scrollableHeight + 100, // Lower bound (scroll to bottom)
+                    100 // Upper bound (scroll to top)
+                );
+                this.scrollContainer.y = newY;
+            }
+        });
+        
+        // Touch/mouse drag scrolling
+        this.input.on('pointerdown', (pointer) => {
+            if (pointer.y > 100 && pointer.y < this.scale.height - 100) {
+                this.scrolling = true;
+                this.lastY = pointer.y;
+            }
+        });
+        
+        this.input.on('pointermove', (pointer) => {
+            if (this.scrolling && this.scrollableHeight > maskHeight) {
+                const deltaY = pointer.y - this.lastY;
+                const newY = Phaser.Math.Clamp(
+                    this.scrollContainer.y + deltaY,
+                    maskHeight - this.scrollableHeight + 100, // Lower bound
+                    100 // Upper bound
+                );
+                this.scrollContainer.y = newY;
+                this.lastY = pointer.y;
+            }
+        });
+        
+        this.input.on('pointerup', () => {
+            this.scrolling = false;
+        });
+        
+        // Keyboard scrolling
+        this.input.keyboard.on('keydown-UP', () => {
+            if (this.scrollableHeight > maskHeight) {
+                const newY = Phaser.Math.Clamp(
+                    this.scrollContainer.y - 20, // Change + to -
+                    maskHeight - this.scrollableHeight, // Remove the +100
+                    0 // Change 100 to 0
+                );
+                this.scrollContainer.y = newY;
+            }
+        });
+        
+        this.input.keyboard.on('keydown-DOWN', () => {
+            if (this.scrollableHeight > maskHeight) {
+                const newY = Phaser.Math.Clamp(
+                    this.scrollContainer.y - 20,
+                    maskHeight - this.scrollableHeight + 100,
+                    100
+                );
+                this.scrollContainer.y = newY;
+            }
         });
     }
 }
