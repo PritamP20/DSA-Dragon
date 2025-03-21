@@ -47,7 +47,8 @@ export class WorldScene extends Phaser.Scene {
     private interactionKey!: Phaser.Input.Keyboard.Key;
     private interactionPrompt!: Phaser.GameObjects.Container;
 
-  private userCoordinates: { x: number; y: number } = { x: 1360, y: 2750 };
+  // private userCoordinates: { x: number; y: number } = { x: 1360, y: 2750 };
+  private userCoordinates: { x: number; y: number } = { x: 600, y: 600 };
   
   constructor() {
     super('WorldScene');
@@ -248,7 +249,7 @@ private showNPCDialog(npc: NPC) {
         this.scene.start('DynamicLearningScene', { topic: npc.topic });
     });
 }
-
+//USE AI HERE TO GENERATE RANDOM RELATED DIALOGUES FOR THE GAME
 private getNPCDialog(topic: string): string {
     // Return dialog text based on topic
     const dialogs = {
@@ -578,33 +579,31 @@ private getNPCDialog(topic: string): string {
     this.npcs = this.physics.add.staticGroup();
     
     // NPCs near houses - using the house coordinates from the collision data
-    
+    //USING GEMINI API
+    ///GENERATE RANDOM HINTS RELATED TO THE COMMENTS WE HAVE PUT
     // NPC near the main house (1300, 1510)
     this.createNPC(1250, 1460, 'Mayor', "Just like how a dictionary allows quick lookups, HashMaps in programming provide efficient key-value pair searching!");
     
     // NPC near the second house (880, 1510)
-    //HINT RELATED TO BINARY SEARCH
-    this.createNPC(830, 1460, 'Shopkeeper', "Finding the right item in a shop is like Binary Search—efficient and fast when everything is sorted!");
+    this.createNPC(830, 1460, 'Shopkeeper', 'Hello traveler! I sell all sorts of items. Would you like to see my wares?');
     
-    // HINT RELATED TO BINARY TREES IN DSA
-    this.createNPC(330, 1530, 'Farmer', "A well-structured farm, like a Binary Tree, ensures everything is organized for quick access and growth!");
+    // NPC near the third house (380, 1580)
+    this.createNPC(330, 1530, 'Farmer', 'The crops are growing well this season. Make sure to visit our local market!');
     
-    // HINT RELATED TO STACKS IN DSA
-    this.createNPC(400, 50, 'Guard', "Just like a stack, guards handle threats in a Last-In-First-Out manner—dealing with the most recent danger first!");
+    // NPC near fence area (450, 0)
+    this.createNPC(400, 50, 'Guard', 'Be careful wandering outside the town. There are strange creatures in the wilderness.');
     
     // NPC near trees (800, 2200)
-    // A HINT RELATED TO LINKED LISTS IN DSA
-    this.createNPC(750, 2150, 'Woodcutter', "A linked list is like a chain of trees in a forest—each tree (node) is connected to the next!");
+    this.createNPC(750, 2150, 'Woodcutter', 'The forest provides us with timber and shelter. Respect nature, traveler.');
     
-    // A HINT RELATED TO THE CODING JOURNEY AHEAD
-    this.createNPC(1000, 2700, 'Fisher', '"Learning to code is like fishing—you need patience, the right tools, and practice to master it!"');
+    // NPC near the bottom of the map
+    this.createNPC(1000, 2700, 'Fisher', 'The lake has the best fish you\'ll ever taste. I\'ve been fishing here for decades.');
     
     // NPC near the mountain (470, 800)
     this.createNPC(420, 750, 'Miner', 'The mountains contain valuable minerals. We\'ve been mining here for generations.');
     
     // NPC on the path (1000, 2000)
-    //A HINT RELATED TO ARRAYS IN DSA
-    this.createNPC(1000, 2000, 'Traveler', "An array is like a road—you can travel to any point directly if you know the index (position)!");
+    this.createNPC(1000, 2000, 'Traveler', 'I\'m just passing through. This town has such friendly people!');
   }
 
   private createNPC(x: number, y: number, name: string, dialog: string, educationalContent?: any[]) {
