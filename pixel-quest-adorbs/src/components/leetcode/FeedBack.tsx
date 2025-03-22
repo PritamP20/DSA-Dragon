@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
+import {errorAndImprovements} from '../api/courseDataApi.js'
+import { useEffect } from 'react';
 
-const FeedbackAnalysis = ({ userCode, testResults, q }) => {
+const FeedbackAnalysis = ({ userCode, testResults, q,error, code }) => {
   console.log(q)
   const [feedbackExpanded, setFeedbackExpanded] = useState(true);
   const [selectedSection, setSelectedSection] = useState('overview');
-
-  // Mock feedback data - in a real implementation, this would come from an API
-  const feedbackData = {
+  const [feedbackData, setFeedbackData] = useState({
     overview: {
       score: 85,
       complexity: "O(n)",
@@ -48,7 +48,30 @@ const FeedbackAnalysis = ({ userCode, testResults, q }) => {
         snippet: "function twoSum(nums, target) {\n  const sorted = [...nums].map((val, idx) => [val, idx]).sort((a, b) => a[0] - b[0]);\n  let left = 0;\n  let right = sorted.length - 1;\n  \n  while (left < right) {\n    const sum = sorted[left][0] + sorted[right][0];\n    if (sum === target) {\n      return [sorted[left][1], sorted[right][1]];\n    } else if (sum < target) {\n      left++;\n    } else {\n      right--;\n    }\n  }\n  return null;\n}"
       }
     ]
-  };
+  })
+
+  const fetchAiFeedBack = async ()=>{
+    try {
+      let response = await errorAndImprovements(q.title+q.discription, code, error)
+      console.log("response", response)
+
+      if (response.includes("```")) {
+        response = response.replace(/```json\s*/g, "");
+        response = response.replace(/```\s*/g, "");
+    }
+    
+    // Parse the JSON response
+    const responseData = JSON.parse(response);
+    console.log("Parsed data:", responseData);
+    setFeedbackData(responseData)
+    } catch (error) {
+     console.log(error) 
+    }
+  }
+
+  useEffect(()=>{
+    fetchAiFeedBack()
+  },[])
 
   return (
     <div className="h-full flex flex-col">

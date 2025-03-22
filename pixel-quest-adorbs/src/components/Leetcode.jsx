@@ -10,6 +10,11 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
   const [level, setLevel] = useState(3);
   const [streakDays, setStreakDays] = useState(5);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [code, setCode] = useState(
+    "// Write your solution here\nfunction solution(input) {\n  // Parse the input string into an array of numbers\n  const numbers = JSON.parse(input);\n  \n  // Sum all the numbers in the array\n  let result = 0;\n  for (let i = 0; i < numbers.length; i++) {\n    result += numbers[i];\n  }\n  \n  return result;\n}"
+  );
+  const [error,  setError] = useState("no error yet");
+  
   
   // Mock data
   const completedProblems = 17;
@@ -188,7 +193,7 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
               </div> */}
               
               <div className="flex-1 bg-gray-800 rounded border border-gray-700 overflow-hidden">
-                <CodeRunner testCases={testcases} q={q}/>
+                <CodeRunner testCases={testcases} q={q} code={code} setCode={setCode} setError={setError}/>
               </div>
               
               <div className="mt-4 flex justify-between">
@@ -451,7 +456,7 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
 
           // 3. In the content area section, add this conditional rendering:
           {activeSection === 'feedback' && (
-            <FeedbackAnalysis userCode={2} testResults={"good"} q={q} />
+            <FeedbackAnalysis userCode={2} testResults={"good"} q={q} error={error} code={code} />
           )}
           
           {activeSection === 'notes' && (

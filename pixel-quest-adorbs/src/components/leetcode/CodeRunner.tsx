@@ -569,16 +569,16 @@
 
 import React, { useEffect, useState } from "react";
 
-const CodeRunner = ({testcases, q}) => {
-  const [code, setCode] = useState(
-    "// Write your solution here\nfunction solution(input) {\n  // Parse the input string into an array of numbers\n  const numbers = JSON.parse(input);\n  \n  // Sum all the numbers in the array\n  let result = 0;\n  for (let i = 0; i < numbers.length; i++) {\n    result += numbers[i];\n  }\n  \n  return result;\n}"
-  );
+const CodeRunner = ({testcases, q, code, setCode, setError}) => {
+  // const [code, setCode] = useState(
+  //   "// Write your solution here\nfunction solution(input) {\n  // Parse the input string into an array of numbers\n  const numbers = JSON.parse(input);\n  \n  // Sum all the numbers in the array\n  let result = 0;\n  for (let i = 0; i < numbers.length; i++) {\n    result += numbers[i];\n  }\n  \n  return result;\n}"
+  // );
   const [activeTab, setActiveTab] = useState("code"); // "code", "testCases"
   const [testCaseState, setTestCaseState] = useState([
     { id: 1, input: "[1, 2, 3, 4]", expectedOutput: "10", active: true },
     { id: 2, input: "[-1, -2, 10]", expectedOutput: "7", active: true },
   ]);
-  const [error, setError] = useState()
+  // const [error, setError] = useState()
 
   // Use effect to set test cases if they are passed as props
   function isJSONObject(q) {
