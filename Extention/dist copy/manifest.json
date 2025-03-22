@@ -1,0 +1,29 @@
+{
+    "manifest_version": 3,
+    "name": "LeetCode Code Extractor React",
+    "version": "1.0",
+    "permissions": ["scripting", "storage", "activeTab", "tabs"],
+    "host_permissions": [
+      "https://leetcode.com/*",
+      "https://algolistapi.vercel.app/*"
+    ],
+    "action": {
+      "default_popup": "index.html",
+      "default_icon": {
+        "16": "assets/icon16.png",
+        "48": "assets/icon48.png",
+        "128": "assets/icon128.png"
+      }
+    },
+    "icons": {
+      "16": "assets/icon16.png",
+      "48": "assets/icon48.png",
+      "128": "assets/icon128.png"
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://leetcode.com/*"],
+        "js": ["content.js"]
+      }
+    ]
+  }
