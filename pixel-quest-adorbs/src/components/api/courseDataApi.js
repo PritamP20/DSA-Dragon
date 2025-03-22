@@ -1,5 +1,12 @@
 import model from "../api/model.js";
 
+ const map_video =  {
+  'Array' : ["https://www.youtube.com/watch?v=TQMvBTKn2p0&t=469s&ab_channel=GregHogg","https://youtu.be/8wmn7k1TTcI?si=co_xGkO6fU7OM3a7","https://youtu.be/3_x_Fb31NLE?si=x7_R95o8EjdfGsYN"],
+  'Linked List' : ["https://youtu.be/dqLHTK7RuIo?si=8J--Acm_dZHI4gel","https://youtu.be/N6dOwBde7-M?si=FPR8UJYjuYJz0K3y","https://youtu.be/LyuuqCVkP5I?si=MZo0rsPNqo-59zJj"],
+  'Binary Search Trees' : ["https://youtu.be/EPwWrs8OtfI?si=E4xi4Unnnc22hOow","https://youtu.be/pYT9F8_LFTM?si=zT78A-6gvL3Vt4oe","https://youtu.be/cySVml6e_Fc?si=gR-oTnJTQNkbrtks"],
+}
+
+
 const generateCourseData = async (topic) => {
   try {
     const prompt = `
@@ -93,6 +100,7 @@ const errorAndImprovements = async (problem_statement, code_snippet, err_log) =>
     ${problem_statement}
     ${code_snippet}
     ${err_log}
+    Do not Generate Markdown Content!
     Expected JSON Output:
 {
   "overview": {
@@ -148,4 +156,5 @@ export {
   generateLeetCodeQuestion,
   npcDialogues,
   errorAndImprovements,
+  map_video,
 };
