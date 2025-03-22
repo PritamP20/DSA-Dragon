@@ -56,8 +56,8 @@ export class WorldScene extends Phaser.Scene {
     private interactionKey!: Phaser.Input.Keyboard.Key;
     private interactionPrompt!: Phaser.GameObjects.Container;
 
-  // private userCoordinates: { x: number; y: number } = { x: 1360, y: 2750 };
-  private userCoordinates: { x: number; y: number } = { x: 1241.625240354536, y: 1148.0498440352615 };
+  private userCoordinates: { x: number; y: number } = { x: 1360, y: 2750 };
+  // private userCoordinates: { x: number; y: number } = { x: 1241.625240354536, y: 1148.0498440352615 };
   
   constructor() {
     super('WorldScene');
@@ -96,11 +96,12 @@ export class WorldScene extends Phaser.Scene {
     // this.npcsNerd = this.physics.add.sprite(400, 1300, "player").setScale(0.1);
     const npcData = [
         { id: 'professor_tree', x: 652.8181216087671, y: 559.5262145875631, frame: 0, topic: 'bst', name: 'Professor Oak' },
-        { id: 'professor_tree', x: 1332.2621458756246, y: 246.91780967929733, frame: 0, topic: 'bst', name: 'Pritam' },
-        { id: 'algorithm_master', x: 741.3443361963309, y: 1030.9229799590119, frame: 1, topic: 'linkedList', name: 'Dr. Dynamic' },
-        { id: 'network_guru', x: 485.0025851398573, y: 1890.6336580776644, frame: 2, topic: 'Sorting', name: 'Graph Master' },
-        { id: 'data_organizer', x:1457.3637567824637, y: 2457.6938426723746, frame: 3, topic: 'Array', name: 'Sorter Sam' }
+        { id: 'professor_tree', x: 1332.2621458756246, y: 246.91780967929733, frame: 1, topic: 'bst', name: 'Pritam' },
+        { id: 'algorithm_master', x: 741.3443361963309, y: 1030.9229799590119, frame: 2, topic: 'linkedList', name: 'Dr. Dynamic' },
+        { id: 'network_guru', x: 485.0025851398573, y: 1890.6336580776644, frame: 3, topic: 'Sorting', name: 'Graph Master' },
+        { id: 'data_organizer', x:1457.3637567824637, y: 2457.6938426723746, frame: 4, topic: 'Array', name: 'Sorter Sam' }
     ];
+    
     npcData.forEach(data => {
         const npc = new NPC(
             this,
@@ -200,66 +201,205 @@ private interactWithNPC(npc: NPC) {
     this.showNPCDialog(npc);
 }
 
+// private showNPCDialog(npc: NPC) {
+//   // Calculate positions based on player position
+//   const dialogBoxX = this.player.x;
+//   const dialogBoxY = this.player.y - 80; // Position above player
+//   const boxWidth = 400;
+//   const boxHeight = 150;
+  
+//   // Create a dialog box
+//   const dialogBox = this.add.rectangle(
+//     dialogBoxX,
+//     dialogBoxY,
+//     boxWidth,
+//     boxHeight,
+//     0x000000,
+//     0.8
+//   ).setStrokeStyle(2, 0xFFFFFF);
+  
+//   // Add NPC name (positioned at top-left of dialog box)
+//   const nameText = this.add.text(
+//     dialogBoxX - (boxWidth / 2) + 20,
+//     dialogBoxY - (boxHeight / 2) + 15,
+//     npc.name,
+//     { fontSize: '18px', color: '#FFFFFF', fontStyle: 'bold' }
+//   );
+  
+//   // Add dialog text (positioned below name with proper padding)
+//   const dialogText = this.add.text(
+//     dialogBoxX - (boxWidth / 2) + 20,
+//     dialogBoxY - (boxHeight / 2) + 45,
+//     this.getNPCDialog(npc.topic),
+//     {
+//       fontSize: '16px',
+//       color: '#FFFFFF',
+//       wordWrap: { width: boxWidth - 40 }
+//     }
+//   );
+  
+//   // Add continue button (centered at bottom of dialog)
+//   const continueButton = this.add.rectangle(
+//     dialogBoxX,
+//     dialogBoxY + (boxHeight / 2) - 25,
+//     150,
+//     40,
+//     0x4444FF
+//   ).setInteractive();
+  
+//   // Add button text (centered on button)
+//   const buttonText = this.add.text(
+//     continueButton.x,
+//     continueButton.y,
+//     'Learn More',
+//     { fontSize: '16px', color: '#FFFFFF' }
+//   ).setOrigin(0.5);
+  
+//   // Create a container for easy cleanup
+//   const dialogContainer = this.add.container(0, 0, [
+//     dialogBox, nameText, dialogText, continueButton, buttonText
+//   ]);
+  
+//   // Add interactivity to continue button
+//   continueButton.on('pointerdown', () => {
+//     // Remove dialog
+//     dialogContainer.destroy();
+    
+//     // Start learning scene with this NPC's topic
+//     this.scene.start('DynamicLearningScene', { topic: npc.topic });
+//   });
+// }
 private showNPCDialog(npc: NPC) {
-    // Create a dialog box
-    const dialogBox = this.add.rectangle(
-        this.cameras.main.centerX,
-        this.cameras.main.centerY + 100,
-        400,
-        150,
-        0x000000,
-        0.8
-    ).setStrokeStyle(2, 0xFFFFFF);
+  // Calculate positions based on player position
+  const dialogBoxX = this.player.x;
+  const dialogBoxY = this.player.y + 100; // Position below player
+  const boxWidth = 400;
+  const boxHeight = 150;
+  
+  // Create a dialog box
+  const dialogBox = this.add.rectangle(
+    dialogBoxX,
+    dialogBoxY,
+    boxWidth,
+    boxHeight,
+    0x000000,
+    0.8
+  ).setStrokeStyle(2, 0xFFFFFF);
+  
+  // Add NPC name (positioned at top-left of dialog box)
+  const nameText = this.add.text(
+    dialogBoxX - (boxWidth / 2) + 20,
+    dialogBoxY - (boxHeight / 2) + 15,
+    npc.name,
+    { fontSize: '18px', color: '#FFFFFF', fontStyle: 'bold' }
+  );
+  
+  // Add dialog text (positioned below name with proper padding)
+  const dialogText = this.add.text(
+    dialogBoxX - (boxWidth / 2) + 20,
+    dialogBoxY - (boxHeight / 2) + 45,
+    this.getNPCDialog(npc.topic),
+    {
+      fontSize: '16px',
+      color: '#FFFFFF',
+      wordWrap: { width: boxWidth - 40 }
+    }
+  );
+  
+  // Add close button (positioned at top-right of dialog box)
+  const closeButton = this.add.rectangle(
+    dialogBoxX + (boxWidth / 2) - 15,
+    dialogBoxY - (boxHeight / 2) + 15,
+    24,
+    24,
+    0xFF4444
+  ).setInteractive();
+  
+  // Add X symbol on close button
+  const closeText = this.add.text(
+    closeButton.x,
+    closeButton.y,
+    'X',
+    { fontSize: '16px', color: '#FFFFFF'}
+  ).setOrigin(0.5);
+  
+  // Add continue button (centered at bottom of dialog)
+  const continueButton = this.add.rectangle(
+    dialogBoxX,
+    dialogBoxY + (boxHeight / 2) - 25,
+    150,
+    40,
+    0x4444FF
+  ).setInteractive();
+  
+  // Add button text (centered on button)
+  const buttonText = this.add.text(
+    continueButton.x,
+    continueButton.y,
+    'Learn More',
+    { fontSize: '16px', color: '#FFFFFF' }
+  ).setOrigin(0.5);
+  
+  // Create a container for easy cleanup
+  const dialogContainer = this.add.container(0, 0, [
+    dialogBox, nameText, dialogText, closeButton, closeText, continueButton, buttonText
+  ]);
+  
+  // Store initial NPC position to calculate distance later
+  const initialNpcX = npc.x;
+  const initialNpcY = npc.y;
+  
+  // Close dialog function
+  const closeDialog = () => {
+    dialogContainer.destroy();
+    // Remove the update listener when dialog is closed
+    this.events.off('update', checkDistance);
+  };
+  
+  // Add interactivity to close button
+  closeButton.on('pointerdown', closeDialog);
+  
+  // Add hover effect for close button
+  closeButton.on('pointerover', () => {
+    closeButton.setFillStyle(0xFF6666); // Lighter red on hover
+  });
+  
+  closeButton.on('pointerout', () => {
+    closeButton.setFillStyle(0xFF4444); // Back to original red
+  });
+  
+  // Add interactivity to continue button
+  continueButton.on('pointerdown', () => {
+    // Remove dialog
+    closeDialog();
     
-    // Add NPC name
-    const nameText = this.add.text(
-        dialogBox.x - 180,
-        dialogBox.y - 55,
-        npc.name,
-        { fontSize: '18px', color: '#FFFFFF', fontStyle: 'bold' }
-    );
+    // Start learning scene with this NPC's topic
+    this.scene.start('DynamicLearningScene', { topic: npc.topic });
+  });
+  
+  // Add hover effect for continue button
+  continueButton.on('pointerover', () => {
+    continueButton.setFillStyle(0x6666FF); // Lighter blue on hover
+  });
+  
+  continueButton.on('pointerout', () => {
+    continueButton.setFillStyle(0x4444FF); // Back to original blue
+  });
+  
+  // Function to check distance between player and NPC
+  const checkDistance = () => {
+    const distX = Math.abs(this.player.x - initialNpcX);
+    const distY = Math.abs(this.player.y - initialNpcY);
+    const distance = Math.sqrt(distX * distX + distY * distY);
     
-    // Add dialog text based on NPC topic
-    const dialogText = this.add.text(
-        dialogBox.x - 180,
-        dialogBox.y - 25,
-        this.getNPCDialog(npc.topic),
-        { 
-            fontSize: '16px', 
-            color: '#FFFFFF',
-            wordWrap: { width: 360 }
-        }
-    );
-    
-    // Add continue button
-    const continueButton = this.add.rectangle(
-        dialogBox.x,
-        dialogBox.y + 50,
-        150,
-        40,
-        0x4444FF
-    ).setInteractive();
-    
-    const buttonText = this.add.text(
-        continueButton.x,
-        continueButton.y,
-        'Learn More',
-        { fontSize: '16px', color: '#FFFFFF' }
-    ).setOrigin(0.5);
-    
-    // Create a container for easy cleanup
-    const dialogContainer = this.add.container(0, 0, [
-        dialogBox, nameText, dialogText, continueButton, buttonText
-    ]);
-    
-    // Add interactivity to continue button
-    continueButton.on('pointerdown', () => {
-        // Remove dialog
-        dialogContainer.destroy();
-        
-        // Start learning scene with this NPC's topic
-        this.scene.start('DynamicLearningScene', { topic: npc.topic });
-    });
+    // Close dialog if player moves more than 150 pixels away from initial NPC position
+    if (distance > 150) {
+      closeDialog();
+    }
+  };
+  
+  // Add update listener to check distance on each frame
+  this.events.on('update', checkDistance);
 }
 //USE AI HERE TO GENERATE RANDOM RELATED DIALOGUES FOR THE GAME
 private getNPCDialog(topic: string): string {
@@ -724,7 +864,8 @@ randomYellowGrass() {
     
     // NPC near trees (800, 2200)
     // A HINT RELATED TO LINKED LISTS IN DSA
-    this.createNPC(750, 2150, 'Woodcutter', "Array", 4);
+    // this.createNPC(750, 2150, 'Woodcutter', "Array", 4);
+    this.createNPC(1323.785113019775, 2305.710678118657, 'Woodcutter', "Array", 4);
     
     // A HINT RELATED TO THE CODING JOURNEY AHEAD
     this.createNPC(1000, 2700, 'Fisher', '"Learning to code is like fishing—you need patience, the right tools, and practice to master it!"', 5);

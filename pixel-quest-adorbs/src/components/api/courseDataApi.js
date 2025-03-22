@@ -1,22 +1,38 @@
 import model from "../api/model.js";
 
 const map_video = {  
-  'Array': ["TQMvBTKn2p0", "8wmn7k1TTcI", "3_x_Fb31NLE"],  
-  'Linked List': ["dqLHTK7RuIo", "N6dOwBde7-M", "LyuuqCVkP5I"],  
-  'Binary Search Trees': ["EPwWrs8OtfI", "pYT9F8_LFTM", "cySVml6e_Fc"]  
+  'Array': [
+    "https://www.youtube.com/watch?v=TQMvBTKn2p0", 
+    "https://www.youtube.com/watch?v=8wmn7k1TTcI", 
+    "https://www.youtube.com/watch?v=3_x_Fb31NLE"
+  ],  
+  'Linked List': [
+    "https://www.youtube.com/watch?v=dqLHTK7RuIo", 
+    "https://www.youtube.com/watch?v=N6dOwBde7-M", 
+    "https://www.youtube.com/watch?v=LyuuqCVkP5I"
+  ],  
+  'Binary Search Trees': [
+    "https://www.youtube.com/watch?v=EPwWrs8OtfI", 
+    "https://www.youtube.com/watch?v=pYT9F8_LFTM", 
+    "https://www.youtube.com/watch?v=cySVml6e_Fc"
+  ]  
 };
+
 
 
 // "videoURL": "a youtube video about ${topic} which is a video in format https://www.youtube.com/watch?v=UR_CODE&ab_channel=CHANNEL_NAME ",
 
 
 const generateCourseData = async (topic) => {
-  let video_url = "https://www.youtube.com/watch?v=TQMvBTKn2p0&t=469s&ab_channel=GregHogg";
+  // let video_url = "https://www.youtube.com/watch?v=TQMvBTKn2p0&t=469s&ab_channel=GregHogg";
 
-  if (map_video[topic]) {
-      const randomIndex = Math.floor(Math.random() * map_video[topic].length);
-      video_url = map_video[topic][randomIndex];
-  }
+  // if (map_video[topic]) {
+  //     const randomIndex = Math.floor(Math.random() * map_video[topic].length);
+  //     video_url = map_video[topic][randomIndex];
+  // }
+
+  const randomIndex = Math.floor(Math.random() * map_video[topic].length);
+  let video_url = map_video[topic][randomIndex];
 
   console.log(video_url); // Logs a random video from the selected topic
 
