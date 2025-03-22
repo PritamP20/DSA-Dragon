@@ -427,14 +427,14 @@ private createVideoPlayer() {
         let embedURL = this.courseData.videoURL;
         if (embedURL.includes('watch?v=')) {
             const videoId = embedURL.split('v=')[1].split('&')[0];
-            // embedURL = `https://www.youtube.com/embed/${videoId}`;
-            embedURL = this.courseData.videoURL;
+            embedURL = `https://www.youtube.com/embed/${this.courseData.videoURL}`;
+            // embedURL = this.courseData.videoURL;
         }
         video.src = embedURL;
     } else {
         console.error("No video URL found for topic:", this.currentTopic);
         // Use a default URL if needed
-        video.src = "https://www.youtube.com/embed/dQw4w9WgXcQ";
+        video.src = "https://youtu.be/cySVml6e_Fc?si=gR-oTnJTQNkbrtks";
     }
     
     // Append to the DOM using Phaser's add.dom

@@ -95,10 +95,11 @@ export class WorldScene extends Phaser.Scene {
     // Create NPCs with different topics
     // this.npcsNerd = this.physics.add.sprite(400, 1300, "player").setScale(0.1);
     const npcData = [
-        { id: 'professor_tree', x: 200, y: 150, frame: 0, topic: 'bst', name: 'Professor Oak' },
-        { id: 'algorithm_master', x: 400, y: 250, frame: 1, topic: 'dynamic', name: 'Dr. Dynamic' },
-        { id: 'network_guru', x: 600, y: 350, frame: 2, topic: 'graphs', name: 'Graph Master' },
-        { id: 'data_organizer', x: 300, y: 450, frame: 3, topic: 'sorting', name: 'Sorter Sam' }
+        { id: 'professor_tree', x: 652.8181216087671, y: 559.5262145875631, frame: 0, topic: 'bst', name: 'Professor Oak' },
+        { id: 'professor_tree', x: 1332.2621458756246, y: 246.91780967929733, frame: 0, topic: 'bst', name: 'Pritam' },
+        { id: 'algorithm_master', x: 741.3443361963309, y: 1030.9229799590119, frame: 1, topic: 'linkedList', name: 'Dr. Dynamic' },
+        { id: 'network_guru', x: 485.0025851398573, y: 1890.6336580776644, frame: 2, topic: 'Sorting', name: 'Graph Master' },
+        { id: 'data_organizer', x:1457.3637567824637, y: 2457.6938426723746, frame: 3, topic: 'Array', name: 'Sorter Sam' }
     ];
     npcData.forEach(data => {
         const npc = new NPC(
@@ -693,7 +694,7 @@ randomYellowGrass() {
     rect.setOrigin(0, 0);
     
     if (this.showDebugBounds) {
-        rect.setStrokeStyle(2, 0xff0000); // Add a 2px red border
+        // rect.setStrokeStyle(2, 0xff0000); // Add a 2px red border
         rect.setVisible(true);
     } else {
         rect.setVisible(false);
