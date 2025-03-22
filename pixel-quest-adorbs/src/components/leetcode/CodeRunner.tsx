@@ -578,11 +578,17 @@ const CodeRunner = ({testcases, q}) => {
     { id: 1, input: "[1, 2, 3, 4]", expectedOutput: "10", active: true },
     { id: 2, input: "[-1, -2, 10]", expectedOutput: "7", active: true },
   ]);
+  const [error, setError] = useState()
 
   // Use effect to set test cases if they are passed as props
+  function isJSONObject(q) {
+    return typeof q === 'object' && q !== null && !Array.isArray(q);
+}
   useEffect(() => {
-    if (q && Array.isArray(q)) {
-      setTestCaseState(q.map(tc => ({
+    if (q && isJSONObject(q)) {
+
+      const qTestCases = q.testcases;
+      setTestCaseState(qTestCases.map(tc => ({
         id: tc.id,
         input: tc.input,
         expectedOutput: tc.expectedOutput,
@@ -723,7 +729,8 @@ const CodeRunner = ({testcases, q}) => {
 ${userCode}
 
 // Get input and run solution
-const input = process.stdin.readFileSync(0, 'utf8').trim();
+const fs = require('fs');
+const input = fs.readFileSync(0, 'utf8').trim();
 const output = solution(input);
 console.log(output);
 `;
@@ -859,6 +866,7 @@ int main() {
           });
         } catch (error) {
           console.error("API test case error:", error);
+          setError(error)
           results.push({
             id: testCase.id,
             status: "ERROR",

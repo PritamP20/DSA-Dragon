@@ -81,7 +81,8 @@ export class LeetCodeQuestScene extends Phaser.Scene {
             // const setTestCases = this.registry.get('setTestcases')
             // setTestCases(questionData.testcases)
             const setQ = this.registry.get('setQ')
-            setQ(questionData.testcases)
+            // setQ(questionData.testcases)
+            setQ(questionData)
             console.log("working")
             
             // Remove loading text
