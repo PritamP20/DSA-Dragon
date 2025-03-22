@@ -158,7 +158,7 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
             className={`${menuItemBase} ${activeSection === 'feedback' ? menuItemActive : menuItemInactive}`}
             onClick={() => setActiveSection('notes')}
           >
-            <div className="mr-3">📝</div>
+            <div className="mr-3">✉️</div>
             <div>Feedback</div>
             {activeSection === 'feedback' && <div className="absolute right-2 text-xs">⟩</div>}
           </div>
@@ -167,7 +167,7 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
             className={`${menuItemBase} ${activeSection === 'chatbot' ? menuItemActive : menuItemInactive}`}
             onClick={() => setActiveSection('notes')}
           >
-            <div className="mr-3">📝</div>
+            <div className="mr-3">💬</div>
             <div>ChatBot</div>
             {activeSection === 'chatbot' && <div className="absolute right-2 text-xs">⟩</div>}
           </div>
@@ -176,7 +176,7 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
             className={`${menuItemBase} ${activeSection === 'map' ? menuItemActive : menuItemInactive}`}
             onClick={() => setActiveSection('notes')}
           >
-            <div className="mr-3">📝</div>
+            <div className="mr-3">🗺️</div>
             <div>Map</div>
             {activeSection === 'map' && <div className="absolute right-2 text-xs">⟩</div>}
           </div>

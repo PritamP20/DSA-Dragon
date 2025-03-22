@@ -372,9 +372,13 @@ private showNPCDialog(npc: NPC) {
   continueButton.on('pointerdown', () => {
     // Remove dialog
     closeDialog();
-    
+    const xPlayer = this.player.x;
+    const yPlayer = this.player.y;
     // Start learning scene with this NPC's topic
     this.scene.start('DynamicLearningScene', { topic: npc.topic });
+    this.player.x = xPlayer;
+    this.player.y = yPlayer;
+    this.userCoordinates= { x: 1360, y: 2750 };
   });
   
   // Add hover effect for continue button
@@ -658,7 +662,7 @@ private getNPCDialog(topic: string): string {
     // Store as a class property instead of local variable
     this.redGrassZones = [];
     for (let i = 0; i < Phaser.Math.Between(2, 20); i++) {
-        let x = Phaser.Math.Between(862.3333333333337, 988.3333333333296);
+        let x = Phaser.Math.Between(862.3333333333337, 1173.8543776411705);
         let y = Phaser.Math.Between(249.4136008177218, 515.4136008177218);
         let width = Phaser.Math.Between(40, 80);
         let height = Phaser.Math.Between(40, 80);
@@ -684,7 +688,7 @@ randomYellowGrass() {
     // Store as a class property instead of local variable
     this.yellowGrassZones = [];
     for (let i = 0; i < Phaser.Math.Between(2, 20); i++) {
-        let x = Phaser.Math.Between(1163.5922317655475, 1389.6032346285429);
+        let x = Phaser.Math.Between(1263.5922317655475, 1389.6032346285429);
         let y = Phaser.Math.Between(644.4246036807261, 794.4246036807268);
         let width = Phaser.Math.Between(40, 80);
         let height = Phaser.Math.Between(40, 80);
@@ -908,7 +912,7 @@ randomYellowGrass() {
         0x000000, 
         0
       );
-      debugRect.setStrokeStyle(2, 0x00ff00); // Green border for NPCs
+      // debugRect.setStrokeStyle(2, 0x00ff00); // Green border for NPCs
       npc.setData('debugRect', debugRect);
     }
     

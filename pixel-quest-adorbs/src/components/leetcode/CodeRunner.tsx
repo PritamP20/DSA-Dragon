@@ -215,7 +215,7 @@
 //               headers: {
 //                 "Content-Type": "application/json",
 //                 "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
-//                 "X-RapidAPI-Key": "5464042ffemsh9ee22a55778d02dp1d314fjsn14f201308f7e",
+//                 "X-RapidAPI-Key": "fd14a2165emsh33dccf942f011e6p1a0a8ejsnc5c047d84cf0",
 //               },
 //               body: JSON.stringify({
 //                 source_code: base64Code,
@@ -803,7 +803,8 @@ int main() {
               headers: {
                 "Content-Type": "application/json",
                 "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
-                "X-RapidAPI-Key": "5464042ffemsh9ee22a55778d02dp1d314fjsn14f201308f7e",
+                // "X-RapidAPI-Key": "fd14a2165emsh33dccf942f011e6p1a0a8ejsnc5c047d84cf0",
+                "X-RapidAPI-Key": "fd14a2165emsh33dccf942f011e6p1a0a8ejsnc5c047d84cf0",
               },
               body: JSON.stringify({
                 source_code: base64Code,

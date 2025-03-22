@@ -300,7 +300,8 @@ const Index = () => {
       <header className="w-full bg-gray-800 shadow-md border-b-2 border-gray-700 py-4 px-6 mb-8">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <h1 className="font-pixel text-xl text-red-500 animate-pulse">
-            Pixel Quest
+            Code/
+            Quest
           </h1>
           <nav>
             <ul className="flex space-x-6">
@@ -375,7 +376,7 @@ const Index = () => {
               </p>
               <p className="text-gray-300">
                 Use the arrow keys to move your character around the map and press the space bar to interact with 
-                objects and characters. Enjoy your adventure in Pixel Quest!
+                objects and characters. Enjoy your adventure in Code/Quest!
               </p>
             </div>
           </div>
@@ -385,7 +386,7 @@ const Index = () => {
       <footer className="w-full bg-gray-800 shadow-inner border-t-2 border-gray-700 py-6 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <p className="font-pixel text-xs text-blue-400">
-            Pixel Quest © 2023 • Made with Phaser, React & Tailwind CSS
+            Code/Quest © 2023 • Made with Phaser, React & Tailwind CSS
           </p>
         </div>
       </footer>
