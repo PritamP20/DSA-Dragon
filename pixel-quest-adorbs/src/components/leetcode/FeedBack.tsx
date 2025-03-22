@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 const FeedbackAnalysis = ({ userCode, testResults, q }) => {
+  console.log(q)
   const [feedbackExpanded, setFeedbackExpanded] = useState(true);
   const [selectedSection, setSelectedSection] = useState('overview');
 
