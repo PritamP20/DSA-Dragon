@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import Phaser, { AUTO } from 'phaser';
 
 class NPC extends Phaser.GameObjects.Sprite {
   public id: string;
@@ -77,15 +77,16 @@ export class WorldScene extends Phaser.Scene {
       }
     });
 
-    this.load.spritesheet('player', 'player.png', { frameWidth: 10, frameHeight: 10 });
+    this.load.spritesheet('player', 'player.png', { frameWidth: 12, frameHeight: 20 });
 
 
     this.load.spritesheet('npcs', 'blueguy.png', { frameWidth: 60, frameHeight: 60 });
 
     this.load.spritesheet('nerdnpecs', 'npcs.png',{ frameWidth: 60, frameHeight: 60 } )
 
-const npc = this.add.sprite(50, 50, 'npcs').setScale(100); // Setting the scale here won't work, since setScale(100) is later overwritten
-npc.setScale(3);  // Use a larger value like 3 to zoom in on the sprite
+// const npc = this.add.sprite(50, 50, 'npcs').setScale(100);
+//  // Setting the scale here won't work, since setScale(100) is later overwritten
+// npc.setScale(3);  // Use a larger value like 3 to zoom in on the sprite
 
   }
 
@@ -113,6 +114,7 @@ npc.setScale(3);  // Use a larger value like 3 to zoom in on the sprite
         
         // Add NPC to physics system
         this.physics.add.existing(npc);
+        
     });
 }
 
@@ -274,75 +276,75 @@ private getNPCDialog(topic: string): string {
 
   //end
 
-  createPlayerAnimations() {
-    // Idle animation
-      try {
-        // Your existing animation creation code
-        this.anims.create({
-          key: 'player-idle-down',
-          frames: this.anims.generateFrameNumbers('player', { start: 0, end: 0 }),
-          frameRate: 10,
-          repeat: -1
-        });
-    this.anims.create({
-      key: 'player-idle-down',
-      frames: this.anims.generateFrameNumbers('player', { start: 0, end: 0 }),
-      frameRate: 10,
-      repeat: -1
-    });
-    this.anims.create({
-      key: 'player-idle-up',
-      frames: this.anims.generateFrameNumbers('player', { start: 4, end: 4 }),
-      frameRate: 10,
-      repeat: -1
-    });
-    this.anims.create({
-      key: 'player-idle-left',
-      frames: this.anims.generateFrameNumbers('player', { start: 8, end: 8 }),
-      frameRate: 10,
-      repeat: -1
-    });
-    this.anims.create({
-      key: 'player-idle-right',
-      frames: this.anims.generateFrameNumbers('player', { start: 12, end: 12 }),
-      frameRate: 10,
-      repeat: -1
-    });
+  // createPlayerAnimations() {
+  //   // Idle animation
+  //     try {
+  //       // Your existing animation creation code
+  //       this.anims.create({
+  //         key: 'player-idle-down',
+  //         frames: this.anims.generateFrameNumbers('player', { start: 0, end: 0 }),
+  //         frameRate: 10,
+  //         repeat: -1
+  //       });
+  //   this.anims.create({
+  //     key: 'player-idle-down',
+  //     frames: this.anims.generateFrameNumbers('player', { start: 0, end: 0 }),
+  //     frameRate: 10,
+  //     repeat: -1
+  //   });
+  //   this.anims.create({
+  //     key: 'player-idle-up',
+  //     frames: this.anims.generateFrameNumbers('player', { start: 4, end: 4 }),
+  //     frameRate: 10,
+  //     repeat: -1
+  //   });
+  //   this.anims.create({
+  //     key: 'player-idle-left',
+  //     frames: this.anims.generateFrameNumbers('player', { start: 8, end: 8 }),
+  //     frameRate: 10,
+  //     repeat: -1
+  //   });
+  //   this.anims.create({
+  //     key: 'player-idle-right',
+  //     frames: this.anims.generateFrameNumbers('player', { start: 12, end: 12 }),
+  //     frameRate: 10,
+  //     repeat: -1
+  //   });
     
-    // Walking animations
-    this.anims.create({
-      key: 'player-walk-down',
-      frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
-      frameRate: 10,
-      repeat: -1
-    });
-    this.anims.create({
-      key: 'player-walk-up',
-      frames: this.anims.generateFrameNumbers('player', { start: 4, end: 7 }),
-      frameRate: 10,
-      repeat: -1
-    });
-    this.anims.create({
-      key: 'player-walk-left',
-      frames: this.anims.generateFrameNumbers('player', { start: 8, end: 11 }),
-      frameRate: 10,
-      repeat: -1
-    });
-    this.anims.create({
-      key: 'player-walk-right',
-      frames: this.anims.generateFrameNumbers('player', { start: 12, end: 15 }),
-      frameRate: 10,
-      repeat: -1
-    });
-    if (this.anims.exists('player-idle-down')) {
-      console.log('Animations created successfully');
-    } else {
-      console.log('Failed to create animations');
-    }
-  } catch (error) {
-    console.error('Animation creation error:', error);
-  }
-  }
+  //   // Walking animations
+  //   this.anims.create({
+  //     key: 'player-walk-down',
+  //     frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
+  //     frameRate: 10,
+  //     repeat: -1
+  //   });
+  //   this.anims.create({
+  //     key: 'player-walk-up',
+  //     frames: this.anims.generateFrameNumbers('player', { start: 4, end: 7 }),
+  //     frameRate: 10,
+  //     repeat: -1
+  //   });
+  //   this.anims.create({
+  //     key: 'player-walk-left',
+  //     frames: this.anims.generateFrameNumbers('player', { start: 8, end: 11 }),
+  //     frameRate: 10,
+  //     repeat: -1
+  //   });
+  //   this.anims.create({
+  //     key: 'player-walk-right',
+  //     frames: this.anims.generateFrameNumbers('player', { start: 12, end: 15 }),
+  //     frameRate: 10,
+  //     repeat: -1
+  //   });
+  //   if (this.anims.exists('player-idle-down')) {
+  //     console.log('Animations created successfully');
+  //   } else {
+  //     console.log('Failed to create animations');
+  //   }
+  // } catch (error) {
+  //   console.error('Animation creation error:', error);
+  // }
+  // }
 
   create() {
     // const testSprite = this.add.sprite(400, 300, 'player');
@@ -367,6 +369,7 @@ private getNPCDialog(topic: string): string {
     
     // Set up player character
     this.createPlayer();
+    
 
     this.greenGraphics = this.add.graphics();
     this.redGraphics = this.add.graphics();
@@ -594,12 +597,19 @@ randomYellowGrass() {
   private createPlayer() {
     // Create the player sprite at the bottom of the map
     this.player = this.physics.add.sprite(this.userCoordinates.x, this.userCoordinates.y, 'player');
-    this.player.setScale(2);
     this.player.setCollideWorldBounds(true);
-    this.player.setSize(12, 12);
+    
+    // Set appropriate scale
+    this.player.setScale(2); 
+    // Adjust t
+    this.player.setSize(12, 20);
     this.player.setOffset(2, 16);
-    this.player.setDepth(10); // Ensure player is above other objects
-    this.player.play('player-idle-down');
+    this.player.setDepth(10); 
+    // this.createPlayerAnimations();// Ensure player is above other objects
+    this.player.anims.play('player-idle-down');
+
+    // const testPlayer = this.add.image(400, 300, 'player');
+    // testPlayer.setScale(4);
   }
 
   private setupCamera() {

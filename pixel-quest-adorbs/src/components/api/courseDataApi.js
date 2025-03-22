@@ -88,8 +88,18 @@ const npcDialogues = async(topic)=>{
     console.log("All env vars:", import.meta.env);
     return null;
   }
+}
+
+const errorAndImprovements = async(err_log)=>{
+  try{
+    const prompt = `Provide constructive feedback on the given ${err_log} without revealing the solution directly. Focus on improvements, best practices, and potential optimizations.`;
+    const result = await model.generateContent(prompt);
+    return result.response.text();
+  }catch(err){
+    console.log(`Error generating error Improvemnets: ${err.message}`);
+    console.log("All env vars:", import.meta.env);
+    return null;
+  }
 };
 
-
-
-export { generateCourseData , generateLeetCodeQuestion, npcDialogues};
+export { generateCourseData , generateLeetCodeQuestion, npcDialogues, errorAndImprovements};
