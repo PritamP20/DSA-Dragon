@@ -137,7 +137,7 @@ export class LearningScene extends Phaser.Scene {
         const loadingText = this.add.text(400, 200, 'Loading course content...', {
             fontFamily: 'Arial',
             fontSize: '20px',
-            color: '#000000'
+            color: '#FFFFFF' // Changed from #000000 to #FFFFFF
         }).setOrigin(0.5);
         
         // Store reference to remove later
@@ -223,166 +223,13 @@ export class LearningScene extends Phaser.Scene {
             color: '#FFA500',
             fontStyle: 'bold'
         }).setOrigin(0, 0.5);
+
+        if (this.loadingText) {
+            this.loadingText.destroy();
+            this.loadingText = null; // Clear the reference
+        }
+
     }
-
-    // private createVideoPlayer() {
-    //     // Create the YouTube iframe element
-    //     const video = document.createElement("iframe");
-    //     video.width = "560";
-    //     video.height = "315";
-    //     video.allow = "autoplay; encrypted-media";
-    //     video.frameBorder = "0";
-    //     video.style.position = "absolute";
-        
-    //     // Set the correct video URL from course data
-    //     if (this.courseData.videoURL) {
-    //         // Convert regular YouTube URL to embed URL if needed
-    //         let embedURL = this.courseData.videoURL;
-    //         if (embedURL.includes('watch?v=')) {
-    //             const videoId = embedURL.split('v=')[1].split('&')[0];
-    //             embedURL = `https://www.youtube.com/embed/${videoId}`;
-    //         }
-    //         video.src = embedURL;
-    //     } else {
-    //         console.error("No video URL found for topic:", this.currentTopic);
-    //     }
-        
-    //     // Append to the DOM using Phaser's add.dom
-    //     const videoElement = this.add.dom(this.scale.width / 2, this.scale.height / 2 - 50, video);
-        
-    //     // Handle fullscreen mode
-    //     this.scale.on('resize', (gameSize: { width: number, height: number }) => {
-    //         videoElement.setPosition(gameSize.width / 2, gameSize.height / 2);
-    //         video.width = `${gameSize.width * 0.5}`;
-    //         video.height = `${gameSize.height * 0.3}`;
-    //     });
-    // }
-    
-//     private async loadCourseData() {
-//         // Define course data for different topics
-//         // const courseDatabase = {
-//         //     'bst': {
-//         //         title: 'Binary Search Trees',
-//         //         subtitle: 'Level up your tree traversal skills!',
-//         //         videoTitle: 'Binary Search Trees: From Theory to Implementation',
-//         //         videoURL: 'https://www.youtube.com/watch?v=MWSBgTS_GkY',
-//         //         thumbnailKey: 'thumb-bst',
-//         //         duration: '8:42',
-//         //         channel: 'Tree Traversal Academy',
-//         //         views: '15K',
-//         //         concepts: [
-//         //             '🌳 A BST is like a family tree where smaller values go left',
-//         //             '🔍 Search operations are O(log n) on average - super fast!',
-//         //             '⚖️ Balanced trees are happy trees - they perform better',
-//         //             '🧩 Insert and delete operations preserve the BST property'
-//         //         ],
-//         //         funFact: 'The worst-case BST is just a linked list. Sad but true!',
-//         //         xpReward: 50
-//         //     },
-//         //     'dynamic': {
-//         //         title: 'Dynamic Programming',
-//         //         subtitle: 'Master the art of optimal substructure',
-//         //         videoTitle: 'Dynamic Programming: From Fibonacci to Advanced Algorithms',
-//         //         videoURL: 'https://www.youtube.com/watch?v=MWSBgTS_GkY',
-//         //         thumbnailKey: 'thumb-dynamic',
-//         //         duration: '10:24',
-//         //         channel: 'AlgoExpert',
-//         //         views: '12K',
-//         //         concepts: [
-//         //             '🧩 Break down problems into overlapping subproblems',
-//         //             '📊 Memoization prevents redundant calculations',
-//         //             '📈 Dynamic programming transforms exponential solutions to polynomial',
-//         //             '🔄 Recognize when a greedy approach wont work'
-//         //         ],
-//         //         funFact: 'The term "dynamic programming" was chosen to hide mathematical research from government officials!',
-//         //         xpReward: 75
-//         //     },
-//         //     'graphs': {
-//         //         title: 'Graph Algorithms',
-//         //         subtitle: 'Navigate networks like a pro',
-//         //         videoTitle: 'Graph Traversal: BFS, DFS, and Dijkstra\'s Algorithm',
-//         //         videoURL: 'https://www.youtube.com/watch?v=MWSBgTS_GkY',
-//         //         thumbnailKey: 'thumb-graphs',
-//         //         duration: '12:15',
-//         //         channel: 'NetworkNinja',
-//         //         views: '8.5K',
-//         //         concepts: [
-//         //             '🗺️ Graphs represent relationships between objects',
-//         //             '🚶 DFS uses a stack, BFS uses a queue',
-//         //             '🛣️ Shortest path algorithms help optimize routes',
-//         //             '🔄 Cycle detection prevents infinite loops'
-//         //         ],
-//         //         funFact: 'The Seven Bridges of Königsberg problem started graph theory in 1736!',
-//         //         xpReward: 60
-//         //     },
-//         //     'sorting': {
-//         //         title: 'Sorting Algorithms',
-//         //         subtitle: 'Organize data efficiently',
-//         //         videoTitle: 'Sorting Algorithms Visualized: From Bubble Sort to Quick Sort',
-//         //         videoURL: 'https://www.youtube.com/watch?v=sorting-example',
-//         //         thumbnailKey: 'thumb-sorting',
-//         //         duration: '9:37',
-//         //         channel: 'SortingMaster',
-//         //         views: '22K',
-//         //         concepts: [
-//         //             '⏱️ Time complexity determines algorithm efficiency',
-//         //             '🔄 Comparison-based sorts have O(n log n) lower bound',
-//         //             '🧠 Understanding when to use each algorithm is key',
-//         //             '📊 In-place sorting saves memory but can be complex'
-//         //         ],
-//         //         funFact: 'Bogosort (randomly shuffling until sorted) has an average time complexity of O(n × n!)!',
-//         //         xpReward: 45
-//         //     },
-//         //     'default': {
-//         //         title: 'Algorithm Basics',
-//         //         subtitle: 'Start your algorithm journey',
-//         //         videoTitle: 'Introduction to Algorithms and Data Structures',
-//         //         videoURL: 'https://www.youtube.com/watch?v=default-example',
-//         //         thumbnailKey: 'youtube-thumb',
-//         //         duration: '7:20',
-//         //         channel: 'CodeCraft',
-//         //         views: '5K',
-//         //         concepts: [
-//         //             '📝 Algorithms are step-by-step procedures for solving problems',
-//         //             '🧮 Time and space complexity measure efficiency',
-//         //             '🔍 Different problems require different algorithmic approaches',
-//         //             '🔄 Iteration and recursion are two fundamental approaches'
-//         //         ],
-//         //         funFact: 'The word "algorithm" comes from the name of Persian mathematician Al-Khwarizmi!',
-//         //         xpReward: 30
-//         //     }
-//         // };
-
-//         // const courseDataJson = await generateCourseData(this.currentTopic);
-//         // console.log(courseDataJson)
-//         // this.courseData = JSON.parse(courseDataJson);
-//         // console.log(this.courseData)
-
-//    let  courseDataJson = await generateCourseData(this.currentTopic);
-//         console.log("Raw response:", courseDataJson);
-        
-//         // Strip out markdown code blocks if present
-//         if (courseDataJson.includes("```")) {
-//             courseDataJson = courseDataJson.replace(/```json\s*/g, "");
-//             courseDataJson = courseDataJson.replace(/```\s*/g, "");
-//         }
-        
-//         // Parse the JSON response
-//         this.courseData = JSON.parse(courseDataJson);
-//         console.log("Parsed data:", this.courseData);
-
-
-        
-//         // Set the current course data based on the topic
-//         // this.courseData = courseDatabase[this.currentTopic] || courseDatabase['default'];
-//         const iframe = document.querySelector("iframe"); // Select the iframe
-//         if (iframe) {
-//             iframe.src = this.courseData.videoURL; // ✅ Assign safely
-//         } else {
-//             console.error("Iframe not found");
-//         }
-
-//     }
 
 private async loadCourseData() {
     try {
@@ -706,28 +553,7 @@ private getDefaultCourseData() {
         
         resourcesContainer.add(resourcesTitle);
         
-        // Create better-looking resource cards
-        // this.createResourceCard(
-        //     resourcesContainer,
-        //     0, 70,
-        //     width,
-        //     'Practice Problems',
-        //     `5 ${this.currentTopic} coding challenges`,
-        //     'icon-practice',
-        //     0x6272A4,
-        //     'PracticeScene'
-        // );
-        
-        // this.createResourceCard(
-        //     resourcesContainer,
-        //     0, 180,
-        //     width,
-        //     'Interactive Quiz',
-        //     `Test your ${this.currentTopic} knowledge`,
-        //     'icon-quiz',
-        //     0x44475A,
-        //     'QuizScene'
-        // );
+
     }
     
     private createResourceCard(

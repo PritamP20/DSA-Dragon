@@ -156,3 +156,86 @@ canvas {
 .hover\:text-yellow-400:hover {
   text-shadow: 0 0 5px rgba(250, 204, 21, 0.3);
 }
+
+
+/* MapPage.css */
+
+.map-page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Current map display styles */
+.current-map-display {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.main-map-image {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+/* Map tiles container */
+.map-tiles-container {
+  margin-top: 3rem;
+}
+
+.map-tiles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* Individual map tile styles */
+.map-tile {
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover animation for map tiles */
+.map-tile:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.map-tile.selected {
+  border: 3px solid #4CAF50;
+  transform: scale(1.05);
+}
+
+.map-tile-image-container {
+  height: 120px;
+  overflow: hidden;
+}
+
+.map-tile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+/* Additional hover effect for the image inside the tile */
+.map-tile:hover .map-tile-image {
+  transform: scale(1.1);
+}
+
+.map-tile-name {
+  padding: 0.75rem;
+  margin: 0;
+  text-align: center;
+  font-weight: bold;
+  color: #333;
+}
