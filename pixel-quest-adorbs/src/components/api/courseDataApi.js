@@ -33,14 +33,13 @@ Return ONLY valid JSON with no additional text or explanation.
 
     const result = await model.generateContent(prompt);
     // output = result.response.text();
-    return result.response.text()
+    return result.response.text();
   } catch (err) {
     console.log(`Error generating conversation title:${err.message}`);
     console.log("All env vars:", import.meta.env);
     console.log();
   }
 };
-
 
 const generateLeetCodeQuestion = async (topic, difficulty) => {
   try {
@@ -74,32 +73,79 @@ Return ONLY valid JSON with no additional text or explanation.
   }
 };
 
-
-const npcDialogues = async(topic)=>{
-  try{
-    const prompt= `You are a 2D npc character of a game, generate a random fact about the ${topic} in a one short line.
+const npcDialogues = async (topic) => {
+  try {
+    const prompt = `You are a 2D npc character of a game, generate a random fact about the ${topic} in a one short line.
     Example: Just like how a dictionary allows quick lookups, HashMaps in programming provide efficient key-value pair searching!
     `;
     const result = await model.generateContent(prompt);
-  return result.response.text();
-  }
-  catch(err){
+    return result.response.text();
+  } catch (err) {
     console.log(`Error generating Leetcode Question: ${err.message}`);
     console.log("All env vars:", import.meta.env);
     return null;
   }
+};
+
+const errorAndImprovements = async (problem_statement, code_snippet, err_log) => {
+  try {
+    const prompt = `Analyze the following code and provide structured feedback in JSON format and can you add come emoji in analyisi and imrpovements to motivate.
+    ${problem_statement}
+    ${code_snippet}
+    ${err_log}
+    Expected JSON Output:
+{
+  "overview": {
+    "score": "An integer score out of 100 based on efficiency, clarity, and correctness",
+    "complexity": "The overall time complexity (e.g., 'O(n log n)')",
+    "status": "One of ['Passing', 'Needs Improvement', 'Failing'] based on correctness and efficiency",
+    "strengths": [
+      "List 3-4 key strengths of the code, such as good variable naming, clear logic, or optimal performance"
+    ],
+    "weaknesses": [
+      "List 2-4 key weaknesses, such as potential inefficiencies, missing edge case handling, or redundant computations"
+    ]
+  },
+  "analysis": [
+    {
+      "lineNumber": "The line number where the issue occurs",
+      "severity": "One of ['suggestion', 'warning', 'improvement', 'error']",
+      "message": "A concise explanation of the issue",
+      "code": "The problematic or relevant line of code"
+    }
+  ],
+  "alternatives": [
+    {
+      "title": "A better approach (e.g., 'Hash Map Approach')",
+      "complexity": "The time complexity of this approach (e.g., 'O(n)')",
+      "description": "A short explanation of why this approach is better",
+      "snippet": "A short code snippet showcasing the alternative approach"
+    }
+  ]
 }
 
-const errorAndImprovements = async(err_log)=>{
-  try{
-    const prompt = `Provide constructive feedback on the given ${err_log} without revealing the solution directly. Focus on improvements, best practices, and potential optimizations.`;
+### Additional Notes:
+- The feedback should be **constructive and actionable**.
+- Prioritize **efficiency, clarity, and edge case handling**.
+- Include **alternative implementations** if a better solution exists.
+- Keep explanations concise but informative.
+
+Return ONLY valid JSON with NO extra text.
+
+    `;
+
     const result = await model.generateContent(prompt);
     return result.response.text();
-  }catch(err){
+  } catch (err) {
     console.log(`Error generating error Improvemnets: ${err.message}`);
     console.log("All env vars:", import.meta.env);
     return null;
   }
 };
 
-export { generateCourseData , generateLeetCodeQuestion, npcDialogues, errorAndImprovements};
+export {
+  generateCourseData,
+  generateLeetCodeQuestion,
+  npcDialogues,
+  errorAndImprovements,
+};
