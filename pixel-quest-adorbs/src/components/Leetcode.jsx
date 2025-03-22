@@ -1,6 +1,7 @@
 import React, { useState, useEffect, forwardRef } from 'react';
 import CodeRunner from "./leetcode/CodeRunner";
 import FeedbackAnalysis from "./leetcode/FeedBack";
+import ChatBot from "../components/ChatBot/ChatBot"
 
 const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
   console.log("Leetcode component re-rendered");
@@ -30,7 +31,7 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
       
       // Nav with arrow keys when focused
       if (isFocused) {
-        const sections = ['code', 'profile', 'progress', 'learning', 'notes', 'feedback'];
+        const sections = ['code', 'profile', 'progress', 'learning', 'notes', 'feedback', 'chatbot'];
         const currentIndex = sections.indexOf(activeSection);
         
         if (e.key === 'ArrowUp' && currentIndex > 0) {
@@ -159,6 +160,15 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
             <div className="mr-3">📝</div>
             <div>Feedback</div>
             {activeSection === 'feedback' && <div className="absolute right-2 text-xs">⟩</div>}
+          </div>
+
+          <div 
+            className={`${menuItemBase} ${activeSection === 'chatbot' ? menuItemActive : menuItemInactive}`}
+            onClick={() => setActiveSection('notes')}
+          >
+            <div className="mr-3">📝</div>
+            <div>ChatBot</div>
+            {activeSection === 'chatbot' && <div className="absolute right-2 text-xs">⟩</div>}
           </div>
           
           <div className="mt-auto p-4 border-t border-gray-800">
@@ -454,9 +464,12 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
             {activeSection === 'feedback' && <div className="absolute right-2 text-xs">⟩</div>}
           </div>
 
-          // 3. In the content area section, add this conditional rendering:
           {activeSection === 'feedback' && (
             <FeedbackAnalysis userCode={2} testResults={"good"} q={q} error={error} code={code} />
+          )}
+
+          {activeSection === 'chatbot' && (
+              <ChatBot />
           )}
           
           {activeSection === 'notes' && (

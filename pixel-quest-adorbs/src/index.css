@@ -106,3 +106,53 @@ canvas {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
+
+/* Add these styles to your CSS file */
+
+/* Pulse animation for the typing indicator */
+@keyframes customPulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+.animate-pulse {
+  animation: customPulse 1.5s infinite;
+}
+
+/* Message fade-in animation */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.transition-all.duration-300.transform {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* Custom scrollbar for dark theme */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Glow effect for buttons on hover */
+.hover\:bg-green-700:hover {
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+}
+
+.hover\:text-yellow-400:hover {
+  text-shadow: 0 0 5px rgba(250, 204, 21, 0.3);
+}

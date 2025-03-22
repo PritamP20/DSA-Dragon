@@ -151,18 +151,19 @@ Return ONLY valid JSON with NO extra text.
   }
 };
 
-const chatbot = async(query) =>{
-  try{
-    const prompt = `You are a AI Coding Assistant, clear all doubts related to what the user Asks you, give consice response and no Markdown response! `
-  const result = await model.generateContent(prompt);
-  return result.response.text();
-  }catch(err){
-    console.log(`Error generating error Improvements: ${err.message} `);
+const Codechatbot = async(input) => {
+  try {
+    const prompt = `You are a AI Coding Assistant, help users with coding related problems and related to what the user Asks you, give concise response related to the topic in the above message and no Markdown response! 
+    ${input}`;
+    
+    const airesponse = await model.generateContent(prompt);
+    return airesponse.response.text();
+  } catch(err) {
+    console.log(`Error generating response: ${err.message}`);
     console.log("All env vars:", import.meta.env);
     return null;
   }
-
-}
+};
 
 
 export {
@@ -171,5 +172,5 @@ export {
   npcDialogues,
   errorAndImprovements,
   map_video,
-  chatbot
+  Codechatbot,
 };
