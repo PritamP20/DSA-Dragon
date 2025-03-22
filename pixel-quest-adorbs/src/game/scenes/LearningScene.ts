@@ -155,7 +155,7 @@ export class LearningScene extends Phaser.Scene {
         const loadingText = this.add.text(400, 200, 'Loading course content...', {
             fontFamily: 'Arial',
             fontSize: '20px',
-            color: '##FFFFFF'
+            color: '#FFFFFF' // Changed from #000000 to #FFFFFF
         }).setOrigin(0.5);
         
         // Store reference to remove later
@@ -631,28 +631,7 @@ private getDefaultCourseData() {
         
         resourcesContainer.add(resourcesTitle);
         
-        // Create better-looking resource cards
-        // this.createResourceCard(
-        //     resourcesContainer,
-        //     0, 70,
-        //     width,
-        //     'Practice Problems',
-        //     `5 ${this.currentTopic} coding challenges`,
-        //     'icon-practice',
-        //     0x6272A4,
-        //     'PracticeScene'
-        // );
-        
-        // this.createResourceCard(
-        //     resourcesContainer,
-        //     0, 180,
-        //     width,
-        //     'Interactive Quiz',
-        //     `Test your ${this.currentTopic} knowledge`,
-        //     'icon-quiz',
-        //     0x44475A,
-        //     'QuizScene'
-        // );
+
     }
     
     private createResourceCard(

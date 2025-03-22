@@ -179,10 +179,26 @@ Return ONLY valid JSON with NO extra text.
   }
 };
 
+const Codechatbot = async(input) => {
+  try {
+    const prompt = `You are a AI Coding Assistant, help users with coding related problems and related to what the user Asks you, give concise response related to the topic in the above message and no Markdown response! 
+    ${input}`;
+    
+    const airesponse = await model.generateContent(prompt);
+    return airesponse.response.text();
+  } catch(err) {
+    console.log(`Error generating response: ${err.message}`);
+    console.log("All env vars:", import.meta.env);
+    return null;
+  }
+};
+
+
 export {
   generateCourseData,
   generateLeetCodeQuestion,
   npcDialogues,
   errorAndImprovements,
   map_video,
+  Codechatbot,
 };

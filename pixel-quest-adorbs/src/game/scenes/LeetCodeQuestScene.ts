@@ -146,7 +146,7 @@ export class LeetCodeQuestScene extends Phaser.Scene {
         const headerText = this.add.text(
             this.scale.width / 2,
             panelY + 30,
-            'LeetCode Challenge',
+            'CodeQuest Challenge',
             { fontSize: '24px', color: '#ffffff', fontStyle: 'bold' }
         ).setOrigin(0.5);
         

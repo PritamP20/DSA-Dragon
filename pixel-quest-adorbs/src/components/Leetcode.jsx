@@ -1,6 +1,8 @@
 import React, { useState, useEffect, forwardRef } from 'react';
 import CodeRunner from "./leetcode/CodeRunner";
 import FeedbackAnalysis from "./leetcode/FeedBack";
+import ChatBot from "../components/ChatBot/ChatBot"
+import MapTitle from "../components/mapchange/MapTitle"
 
 const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
   console.log("Leetcode component re-rendered");
@@ -30,7 +32,7 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
       
       // Nav with arrow keys when focused
       if (isFocused) {
-        const sections = ['code', 'profile', 'progress', 'learning', 'notes', 'feedback'];
+        const sections = ['code', 'profile', 'progress', 'learning', 'notes', 'feedback', 'chatbot', "map"];
         const currentIndex = sections.indexOf(activeSection);
         
         if (e.key === 'ArrowUp' && currentIndex > 0) {
@@ -160,6 +162,24 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
             <div>Feedback</div>
             {activeSection === 'feedback' && <div className="absolute right-2 text-xs">⟩</div>}
           </div>
+
+          <div 
+            className={`${menuItemBase} ${activeSection === 'chatbot' ? menuItemActive : menuItemInactive}`}
+            onClick={() => setActiveSection('notes')}
+          >
+            <div className="mr-3">📝</div>
+            <div>ChatBot</div>
+            {activeSection === 'chatbot' && <div className="absolute right-2 text-xs">⟩</div>}
+          </div>
+
+          <div 
+            className={`${menuItemBase} ${activeSection === 'map' ? menuItemActive : menuItemInactive}`}
+            onClick={() => setActiveSection('notes')}
+          >
+            <div className="mr-3">📝</div>
+            <div>Map</div>
+            {activeSection === 'map' && <div className="absolute right-2 text-xs">⟩</div>}
+          </div>
           
           <div className="mt-auto p-4 border-t border-gray-800">
             <div className="text-xs text-gray-500 mb-1">XP Points</div>
@@ -248,7 +268,7 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
                   <div className="text-2xl font-bold">7/12</div>
                 </div>
               </div>
-              
+          
               <div className="mt-4 bg-gray-800 p-4 rounded border border-gray-700">
                 <h3 className="font-bold mb-3">Recent Achievements</h3>
                 <div className="space-y-2">
@@ -454,9 +474,16 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
             {activeSection === 'feedback' && <div className="absolute right-2 text-xs">⟩</div>}
           </div>
 
-          // 3. In the content area section, add this conditional rendering:
           {activeSection === 'feedback' && (
             <FeedbackAnalysis userCode={2} testResults={"good"} q={q} error={error} code={code} />
+          )}
+
+          {activeSection === 'chatbot' && (
+              <ChatBot />
+          )}
+
+          {activeSection === 'map' && (
+              <MapTitle />
           )}
           
           {activeSection === 'notes' && (

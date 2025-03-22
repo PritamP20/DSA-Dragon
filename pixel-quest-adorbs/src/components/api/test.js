@@ -1,8 +1,8 @@
-import { generateCourseData, generateLeetCodeQuestion , npcDialogues, errorAndImprovements} from "./courseDataApi.js"
+import { generateCourseData, generateLeetCodeQuestion , npcDialogues, errorAndImprovements, Codechatbot} from "./courseDataApi.js"
 
 const test = async () => {
-  const topic = "Binary Search Trees";
-  const data = await generateCourseData(topic);
+  const topic = "TELL ME SOMETHING ABOUT BST";
+  const data = await Codechatbot(topic);
   console.log("Generated Course Data:", data);
 };
 // const test = async () => {
