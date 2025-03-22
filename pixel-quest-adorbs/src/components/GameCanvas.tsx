@@ -19,9 +19,10 @@ interface PhaserGameProps {
   setQ?: any;
   ref?: any;
   isFocused?: boolean;
+  setTestCases?:any
 }
 
-const PhaserGame: React.FC<PhaserGameProps> = ({ ref,w = 800, h = 600, setQ, isFocused }) => {
+const PhaserGame: React.FC<PhaserGameProps> = ({ ref,w = 800, h = 600, setQ, isFocused, setTestCases }) => {
   const gameRef = useRef<HTMLDivElement | null>(null);
   const gameInstance = useRef<Phaser.Game | null>(null);
 
@@ -61,6 +62,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ ref,w = 800, h = 600, setQ, isF
         game = new Phaser.Game(config);
         gameInstance.current = game;
         game.registry.set('setQ', setQ);
+        game.registry.set('setTestcases', setTestCases)
       } catch (error) {
         console.error('Failed to load Phaser:', error);
         toast.error('Failed to load the game engine. Please try again.');
