@@ -451,7 +451,7 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
 
           // 3. In the content area section, add this conditional rendering:
           {activeSection === 'feedback' && (
-            <FeedbackAnalysis userCode={2} testResults={"good"} />
+            <FeedbackAnalysis userCode={2} testResults={"good"} q={q} />
           )}
           
           {activeSection === 'notes' && (
