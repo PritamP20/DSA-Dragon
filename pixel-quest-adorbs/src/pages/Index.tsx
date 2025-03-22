@@ -6,8 +6,9 @@ const Index = () => {
   const gameSectionRef = useRef(null);
   const [w, setW] = useState(700);
   const [h, setH] = useState(600);
-  const [q, setQ] = useState("Nothing")
+  const [q, setQ] = useState("nothing")
   const [activeFocus, setActiveFocus] = useState('game'); // 'game' or 'leetcode'
+  const [testCases, setTestCases] = useState([])
   
   const gameRef = useRef(null);
   const leetcodeRef = useRef(null);
@@ -39,14 +40,17 @@ const Index = () => {
         }
         return;
       }
-
-
-      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+  
+      // Check if the user is typing in a textarea or input element
+      const isEditingText = 
+        e.target.tagName.toLowerCase() === 'textarea' || 
+        e.target.tagName.toLowerCase() === 'input';
+  
+      // Only handle arrow keys for game controls if not editing text
+      if (!isEditingText && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'e', 'E'].includes(e.key)) {
         e.preventDefault(); // Prevent scrolling the page
         
         if (activeFocus === 'game' && gameRef.current) {
-          // You need to implement a method in your GameCanvas component to handle these keys
-          // For example:
           gameRef.current.handleKeyDown(e);
         } else if (activeFocus === 'leetcode' && leetcodeRef.current) {
           leetcodeRef.current.handleKeyDown(e);
@@ -54,7 +58,7 @@ const Index = () => {
       }
       
       // Handle other keys as needed
-      if (e.key === ' ' && activeFocus === 'game' && gameRef.current) {
+      if (e.key === ' ' && activeFocus === 'game' && gameRef.current && !isEditingText) {
         e.preventDefault();
         // Handle space key for game
         gameRef.current.handleSpaceKey();
@@ -139,10 +143,10 @@ const Index = () => {
           
           <div className="flex w-full max-w-4xl justify-center items-center gap-0">
             <div id="game" className="flex-1 flex justify-center" onClick={handleGameFocus}>
-              <GameCanvas ref={gameRef} w={w} h={w} setQ={setQ} isFocused={activeFocus=="game"}/>
+              <GameCanvas ref={gameRef} w={w} h={w} setQ={setQ} setTestCases={setTestCases} isFocused={activeFocus=="game"}/>
             </div>
             <div id="leetcode" className="flex-1 flex justify-center border bg-black text-white border-black" onClick={handleLeetcodeFocus}>
-              <Leetcode ref={leetcodeRef} w={w} h={w} q={q} isFocused={activeFocus=="leetcode"}/>
+              <Leetcode ref={leetcodeRef} w={w} h={w} q={q} isFocused={activeFocus=="leetcode"} testcases={testCases}/>
 
             </div>
           </div>

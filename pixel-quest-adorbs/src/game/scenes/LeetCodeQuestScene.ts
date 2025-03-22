@@ -66,6 +66,8 @@ export class LeetCodeQuestScene extends Phaser.Scene {
         try {
             // Call the API to generate a question
             let questionJSON = await generateLeetCodeQuestion(this.topic, this.difficulty);
+            
+
 
             if (questionJSON.includes("```")) {
                 questionJSON = questionJSON.replace(/```json\s*/g, "");
@@ -76,6 +78,11 @@ export class LeetCodeQuestScene extends Phaser.Scene {
             const questionData = JSON.parse(questionJSON);
             console.log(questionData)
             console.log("Parsed data:", this.questionData);
+            // const setTestCases = this.registry.get('setTestcases')
+            // setTestCases(questionData.testcases)
+            const setQ = this.registry.get('setQ')
+            setQ(questionData.testcases)
+            console.log("working")
             
             // Remove loading text
             loadingText.destroy();

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, forwardRef } from 'react';
 import CodeRunner from "./leetcode/CodeRunner";
+import FeedbackAnalysis from "./leetcode/FeedBack";
 
-const Leetcode = forwardRef(({ w, h, q, isFocused }, ref) => {
+const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
   console.log("Leetcode component re-rendered");
   const [showOutput, setShowOutput] = useState(false);
   const [activeSection, setActiveSection] = useState('code');
@@ -24,7 +25,7 @@ const Leetcode = forwardRef(({ w, h, q, isFocused }, ref) => {
       
       // Nav with arrow keys when focused
       if (isFocused) {
-        const sections = ['code', 'profile', 'progress', 'learning', 'notes'];
+        const sections = ['code', 'profile', 'progress', 'learning', 'notes', 'feedback'];
         const currentIndex = sections.indexOf(activeSection);
         
         if (e.key === 'ArrowUp' && currentIndex > 0) {
@@ -146,6 +147,14 @@ const Leetcode = forwardRef(({ w, h, q, isFocused }, ref) => {
             <div>Notes</div>
             {activeSection === 'notes' && <div className="absolute right-2 text-xs">⟩</div>}
           </div>
+          <div 
+            className={`${menuItemBase} ${activeSection === 'feedback' ? menuItemActive : menuItemInactive}`}
+            onClick={() => setActiveSection('notes')}
+          >
+            <div className="mr-3">📝</div>
+            <div>Feedback</div>
+            {activeSection === 'feedback' && <div className="absolute right-2 text-xs">⟩</div>}
+          </div>
           
           <div className="mt-auto p-4 border-t border-gray-800">
             <div className="text-xs text-gray-500 mb-1">XP Points</div>
@@ -163,7 +172,7 @@ const Leetcode = forwardRef(({ w, h, q, isFocused }, ref) => {
         <div className="flex-1 overflow-auto p-4">
           {activeSection === 'code' && (
             <div className="h-full flex flex-col">
-              <div className="mb-4 bg-gray-800 p-4 rounded border border-gray-700">
+              {/* <div className="mb-4 bg-gray-800 p-4 rounded border border-gray-700">
                 <div className="flex justify-between items-center mb-3">
                   <div className="text-lg font-bold">{q !== 'Nothing' ? q : 'Select a Challenge'}</div>
                   <div className="flex space-x-2">
@@ -176,10 +185,10 @@ const Leetcode = forwardRef(({ w, h, q, isFocused }, ref) => {
                     ? 'Solve this problem using your coding skills. Remember to optimize your solution.'
                     : 'Visit the game world to find coding challenges and unlock new abilities.'}
                 </div>
-              </div>
+              </div> */}
               
               <div className="flex-1 bg-gray-800 rounded border border-gray-700 overflow-hidden">
-                <CodeRunner />
+                <CodeRunner testCases={testcases} q={q}/>
               </div>
               
               <div className="mt-4 flex justify-between">
@@ -430,6 +439,19 @@ const Leetcode = forwardRef(({ w, h, q, isFocused }, ref) => {
                 </div>
               </div>
             </div>
+          )}
+          <div 
+            className={`${menuItemBase} ${activeSection === 'feedback' ? menuItemActive : menuItemInactive}`}
+            onClick={() => setActiveSection('feedback')}
+          >
+            <div className="mr-3">🧠</div>
+            <div>AI Feedback</div>
+            {activeSection === 'feedback' && <div className="absolute right-2 text-xs">⟩</div>}
+          </div>
+
+          // 3. In the content area section, add this conditional rendering:
+          {activeSection === 'feedback' && (
+            <FeedbackAnalysis userCode={2} testResults={"good"} />
           )}
           
           {activeSection === 'notes' && (
