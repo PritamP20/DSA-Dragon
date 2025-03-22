@@ -59,7 +59,7 @@ Format the response as valid JSON:
   "difficulty": "${difficulty}",
   "tags": ${topic} related tags,
   "hints": ["A helpful hint without giving away the solution", "Another hint if needed"],
-  "testcases": Generate 4 Test cases to validate
+  "testcases": Generate 4 Test cases to validate in this json format example { id: 2, input: "[-1, -2, 10]", expectedOutput: "7", active: true }
 }
 
 Return ONLY valid JSON with no additional text or explanation.
