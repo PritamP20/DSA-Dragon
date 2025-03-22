@@ -1,13 +1,41 @@
 import model from "../api/model.js";
 
- const map_video =  {
-  'Array' : ["https://www.youtube.com/watch?v=TQMvBTKn2p0&t=469s&ab_channel=GregHogg","https://youtu.be/8wmn7k1TTcI?si=co_xGkO6fU7OM3a7","https://youtu.be/3_x_Fb31NLE?si=x7_R95o8EjdfGsYN"],
-  'Linked List' : ["https://youtu.be/dqLHTK7RuIo?si=8J--Acm_dZHI4gel","https://youtu.be/N6dOwBde7-M?si=FPR8UJYjuYJz0K3y","https://youtu.be/LyuuqCVkP5I?si=MZo0rsPNqo-59zJj"],
-  'Binary Search Trees' : ["https://youtu.be/EPwWrs8OtfI?si=E4xi4Unnnc22hOow","https://youtu.be/pYT9F8_LFTM?si=zT78A-6gvL3Vt4oe","https://youtu.be/cySVml6e_Fc?si=gR-oTnJTQNkbrtks"],
-}
+const map_video = {  
+  'Array': [
+    "https://www.youtube.com/watch?v=TQMvBTKn2p0", 
+    "https://www.youtube.com/watch?v=8wmn7k1TTcI", 
+    "https://www.youtube.com/watch?v=3_x_Fb31NLE"
+  ],  
+  'Linked List': [
+    "https://www.youtube.com/watch?v=dqLHTK7RuIo", 
+    "https://www.youtube.com/watch?v=N6dOwBde7-M", 
+    "https://www.youtube.com/watch?v=LyuuqCVkP5I"
+  ],  
+  'Binary Search Trees': [
+    "https://www.youtube.com/watch?v=EPwWrs8OtfI", 
+    "https://www.youtube.com/watch?v=pYT9F8_LFTM", 
+    "https://www.youtube.com/watch?v=cySVml6e_Fc"
+  ]  
+};
+
+
+
+// "videoURL": "a youtube video about ${topic} which is a video in format https://www.youtube.com/watch?v=UR_CODE&ab_channel=CHANNEL_NAME ",
 
 
 const generateCourseData = async (topic) => {
+  // let video_url = "https://www.youtube.com/watch?v=TQMvBTKn2p0&t=469s&ab_channel=GregHogg";
+
+  // if (map_video[topic]) {
+  //     const randomIndex = Math.floor(Math.random() * map_video[topic].length);
+  //     video_url = map_video[topic][randomIndex];
+  // }
+
+  const randomIndex = Math.floor(Math.random() * map_video[topic].length);
+  let video_url = map_video[topic][randomIndex];
+
+  console.log(video_url); // Logs a random video from the selected topic
+
   try {
     const prompt = `
 Generate educational content for ${topic} in computer science algorithms.
@@ -19,7 +47,7 @@ Format the response as valid JSON:
   "title": "Full title of the topic in 2 words",
   "subtitle": "An engaging subtitle for the topic in 3 words",
   "videoTitle": "A title for a highly relevant YouTube video 3 words",
-  "videoURL": "a youtube video about ${topic} which is a video in format https://www.youtube.com/watch?v=UR_CODE&ab_channel=CHANNEL_NAME ",
+  "videoURL": "${video_url} just send this url don't add anything extra",
   "thumbnailKey": "thumb-${topic}",
   "duration": "A realistic video duration",
   "channel": "One of the trusted channels above",

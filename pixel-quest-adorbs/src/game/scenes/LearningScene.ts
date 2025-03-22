@@ -1,4 +1,22 @@
 import {generateCourseData} from "../../components/api/courseDataApi.js";
+
+const map_video = {  
+    'Array': [
+      "https://www.youtube.com/watch?v=TQMvBTKn2p0", 
+      "https://www.youtube.com/watch?v=8wmn7k1TTcI", 
+      "https://www.youtube.com/watch?v=3_x_Fb31NLE"
+    ],  
+    'Linked List': [
+      "https://www.youtube.com/watch?v=dqLHTK7RuIo", 
+      "https://www.youtube.com/watch?v=N6dOwBde7-M", 
+      "https://www.youtube.com/watch?v=LyuuqCVkP5I"
+    ],  
+    'Binary Search Trees': [
+      "https://www.youtube.com/watch?v=EPwWrs8OtfI", 
+      "https://www.youtube.com/watch?v=pYT9F8_LFTM", 
+      "https://www.youtube.com/watch?v=cySVml6e_Fc"
+    ]  
+  };
 export class LearningScene extends Phaser.Scene {
     private backgroundImage!: Phaser.GameObjects.Image;
     private mapScale: number = 0.7;
@@ -224,13 +242,11 @@ export class LearningScene extends Phaser.Scene {
             fontStyle: 'bold'
         }).setOrigin(0, 0.5);
 
-        if (this.loadingText) {
-            this.loadingText.destroy();
-            this.loadingText = null; // Clear the reference
+        if(this.loadingText){
+            this.loadingText.destroy()
+            this.loadingText = null
         }
-
     }
-
 private async loadCourseData() {
     try {
         let courseDataJson = await generateCourseData(this.currentTopic);
@@ -257,43 +273,105 @@ private async loadCourseData() {
     }
 }
 
+// private createVideoPlayer() {
+//     // Create the YouTube iframe element
+//     const video = document.createElement("iframe");
+//     video.width = "560";
+//     video.height = "315";
+//     video.allow = "autoplay; encrypted-media";
+//     video.frameBorder = "0";
+//     video.style.position = "absolute";
+
+//     console.log(this.courseData.videoURL)
+    
+//     // Set the correct video URL from course data
+//     if (this.courseData && this.courseData.videoURL) {
+//         // Convert regular YouTube URL to embed URL if needed
+//         let embedURL = this.courseData.videoURL;
+//         if (embedURL.includes('watch?v=')) {
+//             const videoId = embedURL.split('v=')[1].split('&')[0];
+//             // embedURL = `https://www.youtube.com/embed/${this.courseData.videoURL}`;
+//             embedURL = this.courseData.videoURL;
+//         }
+//         video.src = embedURL;
+//     } else {
+//         console.error("No video URL found for topic:", this.currentTopic);
+//         // Use a default URL if needed
+//         video.src = "https://youtu.be/cySVml6e_Fc?si=gR-oTnJTQNkbrtks";
+//     }
+    
+//     // Append to the DOM using Phaser's add.dom
+//     const videoElement = this.add.dom(this.scale.width / 2, this.scale.height / 2 - 50, video);
+    
+//     // Handle fullscreen mode
+//     this.scale.on('resize', (gameSize: { width: number, height: number }) => {
+//         videoElement.setPosition(gameSize.width / 2, gameSize.height / 2);
+//         video.width = `${gameSize.width * 0.5}`;
+//         video.height = `${gameSize.height * 0.3}`;
+//     });
+// }
+
+
 private createVideoPlayer() {
     // Create the YouTube iframe element
     const video = document.createElement("iframe");
-    video.width = "560";
-    video.height = "315";
+    
+    // Calculate appropriate dimensions based on the container
+    // The green box appears to be your intended container
+    const containerWidth = this.scale.width * 0.7; // 70% of game width
+    const containerHeight = this.scale.height * 0.45; // 45% of game height
+    
+    video.width = containerWidth.toString();
+    video.height = containerHeight.toString();
     video.allow = "autoplay; encrypted-media";
     video.frameBorder = "0";
     video.style.position = "absolute";
+    video.allowFullscreen = true;
 
-    console.log(this.courseData.videoURL)
-    
-    // Set the correct video URL from course data
+    // Set the video source as before
     if (this.courseData && this.courseData.videoURL) {
-        // Convert regular YouTube URL to embed URL if needed
-        let embedURL = this.courseData.videoURL;
-        if (embedURL.includes('watch?v=')) {
-            const videoId = embedURL.split('v=')[1].split('&')[0];
-            // embedURL = `https://www.youtube.com/embed/${videoId}`;
-            embedURL = this.courseData.videoURL;
+        let videoId: string | null = null;
+        
+        if (this.courseData.videoURL.includes('watch?v=')) {
+            videoId = this.courseData.videoURL.split('v=')[1]?.split('&')[0];
+        } else if (this.courseData.videoURL.includes('youtu.be/')) {
+            videoId = this.courseData.videoURL.split('youtu.be/')[1]?.split('?')[0];
         }
-        video.src = embedURL;
+        
+        if (videoId) {
+            video.src = `https://www.youtube.com/embed/${videoId}`;
+        } else {
+            console.error("Invalid video URL format");
+            video.src = "https://www.youtube.com/embed/cySVml6e_Fc";
+        }
     } else {
         console.error("No video URL found for topic:", this.currentTopic);
-        // Use a default URL if needed
-        video.src = "https://www.youtube.com/embed/dQw4w9WgXcQ";
+        video.src = "https://www.youtube.com/embed/cySVml6e_Fc";
     }
     
-    // Append to the DOM using Phaser's add.dom
-    const videoElement = this.add.dom(this.scale.width / 2, this.scale.height / 2 - 50, video);
+    // Position slightly higher within the green container area
+    // Adjust these values based on your UI
+    const posX = this.scale.width / 2;
+    const posY = this.scale.height * 0.45; // Positioned higher in the screen
     
-    // Handle fullscreen mode
+    const videoElement = this.add.dom(posX, posY, video);
+    
+    // Add resize handler
     this.scale.on('resize', (gameSize: { width: number, height: number }) => {
-        videoElement.setPosition(gameSize.width / 2, gameSize.height / 2);
-        video.width = `${gameSize.width * 0.5}`;
-        video.height = `${gameSize.height * 0.3}`;
+        // Update position
+        videoElement.setPosition(gameSize.width / 2, gameSize.height * 0.45);
+        
+        // Update size proportionally
+        const newWidth = gameSize.width * 0.7;
+        const newHeight = gameSize.height * 0.45;
+        video.width = newWidth.toString();
+        video.height = newHeight.toString();
     });
+    
+    // Add a method to destroy the video when transitioning away
+    return videoElement; // Return element so you can destroy it later
 }
+
 
 // Add a default data method in case API fails
 private getDefaultCourseData() {
