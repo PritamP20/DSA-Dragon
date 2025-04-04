@@ -25,7 +25,8 @@ export class LeetCodeQuestScene extends Phaser.Scene {
     }
     
     preload() {
-        this.load.image('battle', '/Battle.png');
+        this.load.image('battle', '/Battle.png', );
+        
         this.load.spritesheet('player', 'assets/player.png', { frameWidth: 0, frameHeight: 0 });
     }
     
@@ -33,7 +34,6 @@ export class LeetCodeQuestScene extends Phaser.Scene {
         console.log('LeetCodeQuestScene create starting');
         console.log(`Loading ${this.difficulty} question about ${this.topic}`);
         
-        // Add background first (so it's on the bottom layer)
         const graphics = this.add.graphics();
         graphics.fillStyle(0x000000, 1);
         graphics.fillRectShape(new Phaser.Geom.Rectangle(0, 0, this.scale.width, this.scale.height));
@@ -57,7 +57,9 @@ export class LeetCodeQuestScene extends Phaser.Scene {
     
     private createWorld() {
         // Add the map image
-        this.battleImage = this.add.image(this.scale.width / 2, this.scale.height, 'battle');
+        // this.battleImage = this.add.image(this.scale.width / 2, this.scale.height, 'battle');
+        this.battleImage =  this.add.image(400, 760, 'battle');
+
         this.battleImage.setOrigin(0.5, 1); // Set origin to bottom-center
         this.battleImage.setScale(this.mapScale);
     }

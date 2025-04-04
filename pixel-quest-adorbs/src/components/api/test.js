@@ -1,8 +1,8 @@
 import { generateCourseData, generateLeetCodeQuestion , npcDialogues, errorAndImprovements, Codechatbot} from "./courseDataApi.js"
 
 const test = async () => {
-  const topic = "TELL ME SOMETHING ABOUT BST";
-  const data = await Codechatbot(topic);
+  const topic = "Linked list";
+  const data = await generateLeetCodeQuestion(topic);
   console.log("Generated Course Data:", data);
 };
 // const test = async () => {
