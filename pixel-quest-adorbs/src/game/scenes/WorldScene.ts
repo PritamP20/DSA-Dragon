@@ -27,6 +27,7 @@ class NPC extends Phaser.GameObjects.Sprite {
 
 export class WorldScene extends Phaser.Scene {
   private player!: Phaser.Physics.Arcade.Sprite;
+  private npc!: Phaser.Physics.Arcade.Sprite;
   private grassZones!: { x: number; y: number; width: number; height: number, grassType?:number, density?:number }[];
   private yellowGrassZones!: { x: number; y: number; width: number; height: number, grassType?:number, density?:number }[];
   private redGrassZones!: { x: number; y: number; width: number; height: number, grassType?:number, density?:number }[];
@@ -35,6 +36,7 @@ export class WorldScene extends Phaser.Scene {
   private map!: Phaser.GameObjects.Image;
   private obstacles!: Phaser.Physics.Arcade.StaticGroup;
   private npcs!: Phaser.Physics.Arcade.StaticGroup;
+  private bossNPCs!: Phaser.Physics.Arcade.Group;
   private messageText!: Phaser.GameObjects.Text;
   private messageBox!: Phaser.GameObjects.Rectangle;
   private messageVisible: boolean = false;
@@ -57,7 +59,6 @@ export class WorldScene extends Phaser.Scene {
     private interactionPrompt!: Phaser.GameObjects.Container;
 
   private userCoordinates: { x: number; y: number } = { x: 1360, y: 2750 };
-  // private userCoordinates: { x: number; y: number } = { x: 1241.625240354536, y: 1148.0498440352615 };
   
   constructor() {
     super('WorldScene');
@@ -78,22 +79,18 @@ export class WorldScene extends Phaser.Scene {
       }
     });
 
-    this.load.spritesheet('player', 'player.png', { frameWidth: 12, frameHeight: 20 });
+    this.load.spritesheet('player', 'Hero.png', { frameWidth: 12, frameHeight: 20 });
 
 
     this.load.spritesheet('npcs', 'blueguy.png', { frameWidth: 60, frameHeight: 60 });
 
-    this.load.spritesheet('nerdnpecs', 'npcs.png',{ frameWidth: 60, frameHeight: 60 } )
+    this.load.spritesheet('nerdnpecs', 'Hero.png',{ frameWidth: 60, frameHeight: 60 } )
 
-// const npc = this.add.sprite(50, 50, 'npcs').setScale(100);
-//  // Setting the scale here won't work, since setScale(100) is later overwritten
-// npc.setScale(3);  // Use a larger value like 3 to zoom in on the sprite
+    this.load.spritesheet('boss', 'BOSSnpc.png', { frameWidth: 60, frameHeight: 60 });
 
   }
 
   private createNerdNPCs() {
-    // Create NPCs with different topics
-    // this.npcsNerd = this.physics.add.sprite(400, 1300, "player").setScale(0.1);
     const npcData = [
         { id: 'professor_tree', x: 652.8181216087671, y: 559.5262145875631, frame: 0, topic: 'bst', name: 'Professor Oak' },
         { id: 'professor_tree', x: 1332.2621458756246, y: 246.91780967929733, frame: 1, topic: 'bst', name: 'Pritam' },
@@ -107,29 +104,24 @@ export class WorldScene extends Phaser.Scene {
             this,
             data.x,
             data.y,
-            'npcs',  // This is the key for your spritesheet/image
+            'npcs',  
             data.frame,
             data.id,
             data.topic,
             data.name
         );
         this.npcsNerd.push(npc);
-        
-        // Add NPC to physics system
         this.physics.add.existing(npc);
         
     });
 }
 
 private setupInteraction() {
-    // Create interaction key (e.g., 'E' key)
     this.interactionKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
     
-    // Create interaction zone around player
     this.interactionZone = this.add.zone(this.player.x, this.player.y, 60, 60);
     this.physics.world.enable(this.interactionZone);
     
-    // Create interaction prompt (hidden by default)
     this.interactionPrompt = this.createInteractionPrompt();
     this.interactionPrompt.setVisible(false);
 }
@@ -201,74 +193,8 @@ private interactWithNPC(npc: NPC) {
     this.showNPCDialog(npc);
 }
 
-// private showNPCDialog(npc: NPC) {
-//   // Calculate positions based on player position
-//   const dialogBoxX = this.player.x;
-//   const dialogBoxY = this.player.y - 80; // Position above player
-//   const boxWidth = 400;
-//   const boxHeight = 150;
-  
-//   // Create a dialog box
-//   const dialogBox = this.add.rectangle(
-//     dialogBoxX,
-//     dialogBoxY,
-//     boxWidth,
-//     boxHeight,
-//     0x000000,
-//     0.8
-//   ).setStrokeStyle(2, 0xFFFFFF);
-  
-//   // Add NPC name (positioned at top-left of dialog box)
-//   const nameText = this.add.text(
-//     dialogBoxX - (boxWidth / 2) + 20,
-//     dialogBoxY - (boxHeight / 2) + 15,
-//     npc.name,
-//     { fontSize: '18px', color: '#FFFFFF', fontStyle: 'bold' }
-//   );
-  
-//   // Add dialog text (positioned below name with proper padding)
-//   const dialogText = this.add.text(
-//     dialogBoxX - (boxWidth / 2) + 20,
-//     dialogBoxY - (boxHeight / 2) + 45,
-//     this.getNPCDialog(npc.topic),
-//     {
-//       fontSize: '16px',
-//       color: '#FFFFFF',
-//       wordWrap: { width: boxWidth - 40 }
-//     }
-//   );
-  
-//   // Add continue button (centered at bottom of dialog)
-//   const continueButton = this.add.rectangle(
-//     dialogBoxX,
-//     dialogBoxY + (boxHeight / 2) - 25,
-//     150,
-//     40,
-//     0x4444FF
-//   ).setInteractive();
-  
-//   // Add button text (centered on button)
-//   const buttonText = this.add.text(
-//     continueButton.x,
-//     continueButton.y,
-//     'Learn More',
-//     { fontSize: '16px', color: '#FFFFFF' }
-//   ).setOrigin(0.5);
-  
-//   // Create a container for easy cleanup
-//   const dialogContainer = this.add.container(0, 0, [
-//     dialogBox, nameText, dialogText, continueButton, buttonText
-//   ]);
-  
-//   // Add interactivity to continue button
-//   continueButton.on('pointerdown', () => {
-//     // Remove dialog
-//     dialogContainer.destroy();
-    
-//     // Start learning scene with this NPC's topic
-//     this.scene.start('DynamicLearningScene', { topic: npc.topic });
-//   });
-// }
+
+
 private showNPCDialog(npc: NPC) {
   // Calculate positions based on player position
   const dialogBoxX = this.player.x;
@@ -419,83 +345,9 @@ private getNPCDialog(topic: string): string {
     return dialogs[topic] || dialogs['default'];
 }
 
-
-  //end
-
-  // createPlayerAnimations() {
-  //   // Idle animation
-  //     try {
-  //       // Your existing animation creation code
-  //       this.anims.create({
-  //         key: 'player-idle-down',
-  //         frames: this.anims.generateFrameNumbers('player', { start: 0, end: 0 }),
-  //         frameRate: 10,
-  //         repeat: -1
-  //       });
-  //   this.anims.create({
-  //     key: 'player-idle-down',
-  //     frames: this.anims.generateFrameNumbers('player', { start: 0, end: 0 }),
-  //     frameRate: 10,
-  //     repeat: -1
-  //   });
-  //   this.anims.create({
-  //     key: 'player-idle-up',
-  //     frames: this.anims.generateFrameNumbers('player', { start: 4, end: 4 }),
-  //     frameRate: 10,
-  //     repeat: -1
-  //   });
-  //   this.anims.create({
-  //     key: 'player-idle-left',
-  //     frames: this.anims.generateFrameNumbers('player', { start: 8, end: 8 }),
-  //     frameRate: 10,
-  //     repeat: -1
-  //   });
-  //   this.anims.create({
-  //     key: 'player-idle-right',
-  //     frames: this.anims.generateFrameNumbers('player', { start: 12, end: 12 }),
-  //     frameRate: 10,
-  //     repeat: -1
-  //   });
-    
-  //   // Walking animations
-  //   this.anims.create({
-  //     key: 'player-walk-down',
-  //     frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
-  //     frameRate: 10,
-  //     repeat: -1
-  //   });
-  //   this.anims.create({
-  //     key: 'player-walk-up',
-  //     frames: this.anims.generateFrameNumbers('player', { start: 4, end: 7 }),
-  //     frameRate: 10,
-  //     repeat: -1
-  //   });
-  //   this.anims.create({
-  //     key: 'player-walk-left',
-  //     frames: this.anims.generateFrameNumbers('player', { start: 8, end: 11 }),
-  //     frameRate: 10,
-  //     repeat: -1
-  //   });
-  //   this.anims.create({
-  //     key: 'player-walk-right',
-  //     frames: this.anims.generateFrameNumbers('player', { start: 12, end: 15 }),
-  //     frameRate: 10,
-  //     repeat: -1
-  //   });
-  //   if (this.anims.exists('player-idle-down')) {
-  //     console.log('Animations created successfully');
-  //   } else {
-  //     console.log('Failed to create animations');
-  //   }
-  // } catch (error) {
-  //   console.error('Animation creation error:', error);
-  // }
-  // }
-
   create() {
-    // const testSprite = this.add.sprite(400, 300, 'player');
-    // testSprite.setScale(4); // Make it big so it's easy to see
-    // console.log('Test sprite created', testSprite);
+    // this.player.setScale(1);
+    // this.npc.setScale(0.5);
 
     console.log('Loaded textures:', Object.keys(this.textures.list));
     if (this.textures.exists('player')) {
@@ -532,6 +384,8 @@ private getNPCDialog(topic: string): string {
     
     // Create NPCs
     this.createNPCs();
+
+    this.createBOSSs()
 
     this.createNerdNPCs();
 
@@ -644,9 +498,6 @@ private getNPCDialog(topic: string): string {
       this.grassZones.push({ x, y, width, height });
     }
   
-    // Add other zones as you have them...
-  
-    // Use the green graphics object to draw green grass
     this.greenGraphics.fillStyle(0x00FF00, 1.0);
     
     this.grassZones.forEach(zone => {
@@ -656,10 +507,8 @@ private getNPCDialog(topic: string): string {
     console.log("Green grass zones randomized:", this.grassZones);
   }
   randomRedGrass() {
-    // Clear the red graphics specifically
     this.redGraphics.clear();
     
-    // Store as a class property instead of local variable
     this.redGrassZones = [];
     for (let i = 0; i < Phaser.Math.Between(2, 20); i++) {
         let x = Phaser.Math.Between(862.3333333333337, 1173.8543776411705);
@@ -670,7 +519,6 @@ private getNPCDialog(topic: string): string {
         this.redGrassZones.push({ x, y, width, height });
     }
     
-    // Set red color with full opacity
     this.redGraphics.fillStyle(0xFF0000, 1.0);
     
     // Draw the red grass zones using the red graphics object
@@ -682,10 +530,8 @@ private getNPCDialog(topic: string): string {
 }
 
 randomYellowGrass() {
-    // Clear the yellow graphics specifically
     this.yellowGraphics.clear();
     
-    // Store as a class property instead of local variable
     this.yellowGrassZones = [];
     for (let i = 0; i < Phaser.Math.Between(2, 20); i++) {
         let x = Phaser.Math.Between(1263.5922317655475, 1389.6032346285429);
@@ -696,10 +542,8 @@ randomYellowGrass() {
         this.yellowGrassZones.push({ x, y, width, height });
     }
     
-    // Set yellow color with full opacity
     this.yellowGraphics.fillStyle(0xFFFF00, 1.0); 
     
-    // Draw the yellow grass zones using the yellow graphics object
     this.yellowGrassZones.forEach(zone => {
         this.yellowGraphics.fillRect(zone.x, zone.y, zone.width, zone.height);
     });
@@ -708,54 +552,21 @@ randomYellowGrass() {
 }
 
 
-  update(time: number, delta: number) {
-    // Handle player movement
-    this.handlePlayerMovement();
-
-    this.checkGrassCollision();
-
-    this.checkNPCProximity();
-
-    this.interactionZone.setPosition(this.player.x, this.player.y);
-    
-    // Update interaction prompt position
-    this.interactionPrompt.setPosition(this.player.x, this.player.y - 50);
-    
-    // Handle player interaction
-    if (Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
-      this.checkInteraction();
-    }
-    
-    // Handle message timer
-    if (this.messageVisible && time > this.messageTimer) {
-      this.hideMessage();
-    }
-  }
-
   private createWorld() {
-    // Add the map image
-    // In your create() function
     this.map = this.add.image(0, 0, 'town-map');
     this.map.setOrigin(0, 0);
     this.map.setScale(this.mapScale);
   }
 
   private createPlayer() {
-    // Create the player sprite at the bottom of the map
     this.player = this.physics.add.sprite(this.userCoordinates.x, this.userCoordinates.y, 'player');
     this.player.setCollideWorldBounds(true);
     
-    // Set appropriate scale
-    this.player.setScale(2); 
-    // Adjust t
+    this.player.setScale(0.1); 
     this.player.setSize(12, 20);
     this.player.setOffset(2, 16);
-    this.player.setDepth(10); 
-    // this.createPlayerAnimations();// Ensure player is above other objects
+    this.player.setDepth(10);
     this.player.anims.play('player-idle-down');
-
-    // const testPlayer = this.add.image(400, 300, 'player');
-    // testPlayer.setScale(4);
   }
 
   private setupCamera() {
@@ -765,7 +576,6 @@ randomYellowGrass() {
     console.log('Map width:', this.map.width, 'Map height:', this.map.height);
     this.physics.world.setBounds(0, 0, mapWidth, mapHeight);
     
-    // Set camera bounds and follow player
     this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setZoom(1);
@@ -838,7 +648,6 @@ randomYellowGrass() {
     rect.setOrigin(0, 0);
     
     if (this.showDebugBounds) {
-        // rect.setStrokeStyle(2, 0xff0000); // Add a 2px red border
         rect.setVisible(true);
     } else {
         rect.setVisible(false);
@@ -849,59 +658,38 @@ randomYellowGrass() {
 
   private createNPCs() {
     this.npcs = this.physics.add.staticGroup();
-    
-    // NPCs near houses - using the house coordinates from the collision data
-    //USING GEMINI API
-    ///GENERATE RANDOM HINTS RELATED TO THE COMMENTS WE HAVE PUT
-    // NPC near the main house (1300, 1510)
     this.createNPC(1250, 1460, 'Mayor', "Just like how a dictionary allows quick lookups, HashMaps in programming provide efficient key-value pair searching!",0);
     
-    // NPC near the second house (880, 1510)
-    //HINT RELATED TO BINARY SEARCH
     this.createNPC(830, 1460, 'Shopkeeper', "Finding the right item in a shop is like Binary Search—efficient and fast when everything is sorted!", 1);
     
-    // HINT RELATED TO BINARY TREES IN DSA
     this.createNPC(330, 1530, 'Farmer', "A well-structured farm, like a Binary Tree, ensures everything is organized for quick access and growth!", 2);
     
-    // HINT RELATED TO STACKS IN DSA
     this.createNPC(400, 50, 'Guard', "Just like a stack, guards handle threats in a Last-In-First-Out manner—dealing with the most recent danger first!", 3);
     
-    // NPC near trees (800, 2200)
-    // A HINT RELATED TO LINKED LISTS IN DSA
-    // this.createNPC(750, 2150, 'Woodcutter', "Array", 4);
     this.createNPC(1323.785113019775, 2305.710678118657, 'Woodcutter', "Array", 4);
     
-    // A HINT RELATED TO THE CODING JOURNEY AHEAD
     this.createNPC(1000, 2700, 'Fisher', '"Learning to code is like fishing—you need patience, the right tools, and practice to master it!"', 5);
     
-    // NPC near the mountain (470, 800)
     this.createNPC(420, 750, 'Miner', 'The mountains contain valuable minerals. We\'ve been mining here for generations.', 6);
     
-    // NPC on the path (1000, 2000)
-    //A HINT RELATED TO ARRAYS IN DSA
     this.createNPC(1000, 2000, 'Traveler', "An array is like a road—you can travel to any point directly if you know the index (position)!", 7);
   }
+
 
   private createNPC(x: number, y: number, name: string, dialog: string, frame: number = 0, educationalContent?: any[]) {
     // Create a static sprite for the NPC using the correct texture key 'nerdnpecs'
     const npc = this.physics.add.staticSprite(x, y, 'nerdnpecs', frame);
     npc.setScale(2);
-    npc.setDepth(5); // Ensure NPCs are above the background but below the player
-    
-    // Store educational content if provided
+    npc.setDepth(5);
+
     if (educationalContent) {
       npc.setData('educationalContent', educationalContent);
     }
     
-    // Store data on the NPC
     npc.setData('name', name);
     npc.setData('dialog', dialog);
-    
-    // Set correct collision body size for the 60x60 sprite
     npc.setSize(12, 12);
-    npc.setOffset(24, 40); // Adjusted offset for the larger sprite
-    
-    // Add debug bounds to NPCs if debug is enabled
+    npc.setOffset(24, 40); 
     if (this.showDebugBounds) {
       const bounds = npc.getBounds();
       const debugRect = this.add.rectangle(
@@ -912,7 +700,6 @@ randomYellowGrass() {
         0x000000, 
         0
       );
-      // debugRect.setStrokeStyle(2, 0x00ff00); // Green border for NPCs
       npc.setData('debugRect', debugRect);
     }
     
@@ -920,13 +707,286 @@ randomYellowGrass() {
     console.log(`Created NPC ${name} at ${x}, ${y} with frame ${frame}`);
     return npc;
   }
+  // First, create a specialized interaction method for bosses
+
+private interactWithBoss(boss: Phaser.Physics.Arcade.Sprite) {
+  console.log(`Interacting with BOSS ${boss.getData('name')}`);
+  
+  const playerX = this.player.x;
+  const playerY = this.player.y;
+  
+  // Start the boss scene with boss data
+  this.scene.start('DSABattleScene', { 
+    bossName: boss.getData('name'),
+    bossLevel: boss.getData('level') || 1,
+    playerStats: this.registry.get('playerStats') || { health: 100, attack: 10 },
+    returnPosition: { x: playerX, y: playerY }
+  });
+}
+
+private checkBossProximity() {
+  let nearBoss = false;
+  let nearestBoss: Phaser.Physics.Arcade.Sprite | null = null;
+  let shortestDistance = Infinity;
+  
+  this.bossNPCs.getChildren().forEach((boss:any) => {
+    const distance = Phaser.Math.Distance.Between(
+      this.player.x, this.player.y,
+      boss.x, boss.y
+    );
+    
+    if (distance < 60) {
+      nearBoss = true;
+      
+      if (distance < shortestDistance) {
+        shortestDistance = distance;
+        nearestBoss = boss;
+      }
+    }
+  });
+  
+  if (nearBoss && nearestBoss) {
+    this.interactionPrompt.setPosition(nearestBoss.x, nearestBoss.y - 50);
+    this.interactionPrompt.setVisible(true);
+    
+    if (Phaser.Input.Keyboard.JustDown(this.interactionKey)) {
+      this.interactWithBoss(nearestBoss);
+    }
+  }
+}
+
+
+private createBOSSs() {
+  this.bossNPCs = this.physics.add.group();
+  
+  this.createBoss(
+    1395.470875528236, 
+    236.84434901120468, 
+    'Final Algorithm Boss', 
+    "Challenge me if you dare! Prove your coding skills against my ultimate algorithm challenges!", 
+    0,  // frame
+    {
+      level: 3,
+      rewards: { xp: 500, item: 'Algorithm Mastery Badge' },
+      challenges: ['Binary Tree Traversal', 'Dynamic Programming', 'Graph Algorithms']
+    }
+  );
+  
+  // Add more bosses as needed
+  this.createBoss(
+    800, 
+    500, 
+    'Data Structure Demon', 
+    "I am the master of all data structures! Can you solve my puzzles?", 
+    1,  // frame
+    {
+      level: 2,
+      rewards: { xp: 300, item: 'Data Structure Handbook' },
+      challenges: ['Linked List Manipulation', 'Stack Implementation', 'Queue Operations']
+    }
+  );
+}
+
+
+private createBoss(x: number, y: number, name: string, dialog: string, frame: number = 0, bossData?: any) {
+  const boss = this.physics.add.sprite(x, y, 'boss', frame);
+  boss.setScale(2);
+  boss.setDepth(5); 
+  
+  if (bossData) {
+    Object.keys(bossData).forEach(key => {
+      boss.setData(key, bossData[key]);
+    });
+  }
+
+  boss.setData('name', name);
+  boss.setData('dialog', dialog);
+  boss.setData('isBoss', true);
+  
+  boss.setSize(16, 16);
+  boss.setOffset(22, 38); 
+  
+  if (this.showDebugBounds) {
+    const bounds = boss.getBounds();
+    const debugRect = this.add.rectangle(
+      bounds.x, 
+      bounds.y, 
+      bounds.width, 
+      bounds.height, 
+      0xFF0000, 
+      0
+    );
+    boss.setData('debugRect', debugRect);
+  }
+  
+  this.bossNPCs.add(boss);
+  console.log(`Created Boss ${name} at ${x}, ${y} with frame ${frame}`);
+  return boss;
+}
+
+
+update(time: number, delta: number) {
+  // Handle player movement
+  this.handlePlayerMovement();
+
+  this.checkGrassCollision();
+  this.checkNPCProximity();
+  this.checkBossProximity(); // Add this line
+
+  this.interactionZone.setPosition(this.player.x, this.player.y);
+  
+  this.interactionPrompt.setPosition(this.player.x, this.player.y - 50);
+  
+  if (Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
+    this.checkInteraction();
+  }
+  
+  // Handle message timer
+  if (this.messageVisible && time > this.messageTimer) {
+    this.hideMessage();
+  }
+}
+
+
+private async checkInteraction() {
+  let tileX = this.player.x;
+  let tileY = this.player.y;
+  
+  const offset = 32;
+  if (this.currentPlayerDirection === 'left') {
+    tileX -= offset;
+  } else if (this.currentPlayerDirection === 'right') {
+    tileX += offset;
+  } else if (this.currentPlayerDirection === 'up') {
+    tileY -= offset;
+  } else if (this.currentPlayerDirection === 'down') {
+    tileY += offset;
+  }
+  
+  const interactArea = new Phaser.Geom.Circle(tileX, tileY, 40);
+  
+  if (this.showDebugBounds) {
+    const debugInteractCircle = this.add.circle(tileX, tileY, 40, 0xffff00, 0.3);
+    this.time.delayedCall(500, () => {
+      debugInteractCircle.destroy();
+    });
+  }
+  
+  let hasInteracted = false;
+  
+  for (const child of this.bossNPCs.getChildren()) {
+    const boss = child as Phaser.Physics.Arcade.Sprite;
+    if (Phaser.Geom.Circle.ContainsPoint(interactArea, boss)) {
+      const bossName = boss.getData('name');
+      const bossDialog = boss.getData('dialog');
+      
+      this.showMessage({
+        text: `${bossName}: ${bossDialog}`,
+        color: '#FF0000'
+      });
+      
+      this.time.delayedCall(2000, () => {
+        this.showBossChallengeConfirmation(boss);
+      });
+      
+      hasInteracted = true;
+      break;
+    }
+  }
+  
+  if (!hasInteracted) {
+    this.checkInteractionOriginal()
+  }
+}
+
+private showBossChallengeConfirmation(boss: Phaser.Physics.Arcade.Sprite) {
+  // Create a dialog container
+  const dialogContainer = this.add.container(this.cameras.main.width / 2, this.cameras.main.height / 2);
+  dialogContainer.setScrollFactor(0); 
+  dialogContainer.setDepth(200);
+  
+  // Background
+  const bg = this.add.rectangle(0, 0, 400, 200, 0x000000, 0.8)
+    .setStrokeStyle(2, 0xFF0000);
+  
+  const title = this.add.text(0, -70, `Challenge ${boss.getData('name')}?`, {
+    fontSize: '24px',
+    color: '#FF0000',
+    fontStyle: 'bold'
+  }).setOrigin(0.5);
+  
+  const desc = this.add.text(0, -20, "Are you ready to face this coding challenge?\nYou will need to solve algorithm problems to defeat the boss.", {
+    fontSize: '16px',
+    color: '#FFFFFF',
+    align: 'center'
+  }).setOrigin(0.5);
+  
+  const acceptBtn = this.add.rectangle(80, 50, 150, 40, 0x00AA00)
+    .setInteractive();
+  const acceptText = this.add.text(80, 50, "Accept", {
+    fontSize: '18px',
+    color: '#FFFFFF'
+  }).setOrigin(0.5);
+  
+  const declineBtn = this.add.rectangle(-80, 50, 150, 40, 0xAA0000)
+    .setInteractive();
+  const declineText = this.add.text(-80, 50, "Decline", {
+    fontSize: '18px',
+    color: '#FFFFFF'
+  }).setOrigin(0.5);
+  
+  dialogContainer.add([bg, title, desc, acceptBtn, acceptText, declineBtn, declineText]);
+  
+  acceptBtn.on('pointerdown', () => {
+    dialogContainer.destroy();
+    this.startBossBattle(boss);
+  });
+  
+  declineBtn.on('pointerdown', () => {
+    dialogContainer.destroy();
+    this.showMessage({
+      text: `${boss.getData('name')}: Come back when you're ready to face my challenge!`,
+      color: '#FF0000'
+    });
+  });
+  
+  acceptBtn.on('pointerover', () => {
+    acceptBtn.setFillStyle(0x00FF00);
+  });
+  
+  acceptBtn.on('pointerout', () => {
+    acceptBtn.setFillStyle(0x00AA00);
+  });
+  
+  declineBtn.on('pointerover', () => {
+    declineBtn.setFillStyle(0xFF0000);
+  });
+  
+  declineBtn.on('pointerout', () => {
+    declineBtn.setFillStyle(0xAA0000);
+  });
+}
+
+// Method to start the boss battle
+private startBossBattle(boss: Phaser.Physics.Arcade.Sprite) {
+  // Store player position for return
+  const playerX = this.player.x;
+  const playerY = this.player.y;
+  
+  // Start the boss battle scene
+  this.scene.start('BossBattleScene', {
+    bossName: boss.getData('name'),
+    bossLevel: boss.getData('level') || 1,
+    challenges: boss.getData('challenges') || [],
+    rewards: boss.getData('rewards') || {},
+    returnPosition: { x: playerX, y: playerY }
+  });
+}
 
   private createMessageDisplay() {
-    // Create a message box at the bottom of the screen
     const width = this.cameras.main.width;
     const height = 100;
     
-    // Create a rectangle for the message box
     this.messageBox = this.add.rectangle(
       width / 2,
       this.cameras.main.height - height / 2,
@@ -940,7 +1000,6 @@ randomYellowGrass() {
     this.messageBox.setDepth(100); // Ensure it's above everything
     this.messageBox.setVisible(false);
     
-    // Create text for the message
     this.messageText = this.add.text(
       width / 2,
       this.cameras.main.height - height / 2,
@@ -1041,12 +1100,11 @@ randomYellowGrass() {
     }
   }
 
-  
-
-  private async checkInteraction() {
+  private async checkInteractionOriginal() { //original check interaction
     // Get facing tile based on direction
     let tileX = this.player.x;
     let tileY = this.player.y;
+
     
     // Adjust position based on facing direction
     const offset = 32;
@@ -1096,12 +1154,8 @@ randomYellowGrass() {
   
         this.showMessage({
           text: `${npcName}: ${response}`,
-          color: '#FFFFFF' // White text
+          color: '#FFFFFF' 
         });
-        
-        // Make the NPC face the player
-        const dx = this.player.x - npc.x;
-        const dy = this.player.y - npc.y;
         
         if (Math.abs(dx) > Math.abs(dy)) {
           // Horizontal difference is greater
@@ -1183,36 +1237,15 @@ randomYellowGrass() {
       color:"#ffff"
     });
     
-    // Store the original texture and frame to restore after interaction
     const originalTexture = npc.texture.key;
-    
-    // If you're doing any animation or visual change during interaction,
-    // make sure to restore the NPC's appearance afterward
-    
-    // Example of how you might animate the NPC during interaction:
-    // this.tweens.add({
-    //   targets: npc,
-    //   scaleX: 2.2, // Slightly larger
-    //   scaleY: 2.2,
-    //   duration: 200,
-    //   yoyo: true, // Return to original scale
-    //   onComplete: () => {
-    //     // Ensure NPC returns to original appearance
-    //     npc.setTexture(originalTexture, frame);
-    //   }
-    // });
-    
-    // Log the interaction for debugging
     console.log(`Interacted with ${name}, using texture: ${originalTexture}, frame: ${frame}`);
     
-    // If the NPC resets to a different sprite, force it back to the correct one
-    // This is the key fix - add this to any interaction method
     setTimeout(() => {
       if (npc.texture.key !== originalTexture || npc.frame.name !== frame) {
         console.log(`Restoring NPC ${name} to texture: ${originalTexture}, frame: ${frame}`);
         npc.setTexture(originalTexture, frame);
       }
-    }, 100); // Small delay to ensure it catches any changes
+    }, 100); 
   }
 
   private isNearWater(x: number, y: number) {
@@ -1264,7 +1297,4 @@ randomYellowGrass() {
         }
     });
   }
-
-  
 }
-

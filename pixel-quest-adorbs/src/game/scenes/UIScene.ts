@@ -12,14 +12,10 @@ export class UIScene extends Phaser.Scene {
   }
 
   create() {
-    // Create UI components
     this.createUI();
-    
-    // Listen for messages from the world scene
     const worldScene = this.scene.get('WorldScene');
     worldScene.events.on('showMessage', this.showMessage, this);
     
-    // Setup input for UI interactions
     this.input.keyboard!.on('keydown-SPACE', () => {
       if (this.dialogActive) {
         this.hideDialog();
@@ -28,7 +24,6 @@ export class UIScene extends Phaser.Scene {
   }
 
   update(time: number, delta: number) {
-    // Auto-hide dialog after a certain time
     if (this.dialogActive) {
       this.dialogTimer += delta;
       if (this.dialogTimer > 5000) { // 5 seconds
@@ -71,7 +66,6 @@ export class UIScene extends Phaser.Scene {
     this.dialogBox.setVisible(false);
     this.dialogText.setVisible(false);
     
-    // Set dialog as inactive
     this.dialogActive = false;
   }
 }

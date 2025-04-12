@@ -10,24 +10,23 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   preload() {
-    // Create loading screen
     this.createLoadingScreen();
 
-    // Load town map (using the local asset that's already uploaded)
-    this.load.image('player-img', 'player.png');
+    this.load.image('player-img', 'Hero.png');
     this.load.image("player", "/assets/player.png");
     this.load.image('town-map', '/lovable-uploads/2176030f-7feb-4f01-b180-e2b5ee6f6016.png');
     // this.load.image('player', 'player.png');
     this.load.image('battle', '/lovable-uploads/battle.png');
-    // this.load.image('player', 'og-image.png');
+    this.load.image("BossBattle", "/assets/BossBattle.png");
+
     
-    
-    // Create a basic player sprite with a simple color - don't rely on external URLs
-    const canvasTexture = this.textures.createCanvas('player', 16, 32);
-    const context = canvasTexture.getContext();
-    context.fillStyle = '#4a6fa5';
-    context.fillRect(0, 0, 16, 32);
-    canvasTexture.refresh();
+const canvasTexture = this.textures.createCanvas('player-img', 16, 32);
+const context = canvasTexture.getContext();
+context.fillStyle = '#4a6fa5';
+context.fillRect(0, 0, 16, 32);
+canvasTexture.refresh();
+
+// When creating the sprites, set a consistent scale
     
     // Create a basic tileset
     const tilesetCanvas = this.textures.createCanvas('tiles', 64, 64);
@@ -71,6 +70,8 @@ export class PreloadScene extends Phaser.Scene {
     // Start the game
     this.scene.start('WorldScene');
     this.scene.launch('UIScene');
+
+// In your create() function:
   }
 
   private createLoadingScreen() {

@@ -18,7 +18,6 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
   const [error,  setError] = useState("no error yet");
   
   
-  // Mock data
   const completedProblems = 17;
   const totalProblems = 25;
   const progress = (completedProblems / totalProblems) * 100;
@@ -60,17 +59,16 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
     };
   }, [isFocused, activeSection]);
 
-  // Styling constants
   const menuItemBase = "px-4 py-3 flex items-center border-l-4 transition-all duration-200 relative";
   const menuItemActive = "border-yellow-500 bg-gray-800 text-yellow-400";
   const menuItemInactive = "border-transparent hover:border-gray-600 hover:bg-gray-900 text-gray-400 hover:text-gray-300";
   
   return (
     <div className="bg-gray-950 text-white border border-gray-800 flex flex-col overflow-hidden" style={{width: w, height: h}}>
-      {/* Header with game logo */}
+
       <div className="bg-gradient-to-r from-purple-900 via-blue-900 to-purple-900 p-3 border-b border-gray-700 flex items-center justify-between">
         <div className="flex items-center">
-          <div className="text-xl font-bold text-yellow-400 tracking-wider">CODE<span className="text-white">QUEST</span></div>
+          <div className="text-xl font-bold text-yellow-400 tracking-wider">AI<span className="text-white">Tutor</span></div>
           <div className="ml-2 px-2 py-1 bg-gray-900 rounded text-xs text-gray-400">v1.0</div>
         </div>
         <div className="flex items-center space-x-3">
@@ -94,7 +92,6 @@ const Leetcode = forwardRef(({ w, h, q, isFocused, testcases }, ref) => {
           </div>
         )}
         
-        {/* Navigation sidebar with animation */}
         <div 
           className={`bg-gray-900 border-r border-gray-800 flex flex-col transition-all duration-300 ease-in-out ${
             sidebarCollapsed ? 'w-0 opacity-0 overflow-hidden' : 'w-48 opacity-100'

@@ -8,9 +8,11 @@ const loadScenes = async () => {
   const { PreloadScene } = await import('@/game/scenes/PreloadScene');
   const { WorldScene } = await import('@/game/scenes/WorldScene');
   const { LeetCodeQuestScene } = await import('@/game/scenes/LeetCodeQuestScene');
+  const {DSABattleScene}:any = await import('@/game/scenes/BossScene');
   const {LearningScene} = await import('@/game/scenes/LearningScene');
   const { UIScene } = await import('@/game/scenes/UIScene');
-  return [BootScene, PreloadScene, WorldScene, UIScene, LeetCodeQuestScene, LearningScene];
+  const {NFTScene} = await import('@/game/scenes/NFTScene');
+  return [BootScene, PreloadScene, WorldScene, UIScene, LeetCodeQuestScene, LearningScene, DSABattleScene, NFTScene];
 };
 
 interface PhaserGameProps {

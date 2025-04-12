@@ -119,7 +119,7 @@ const CodeQuestLanding = () => {
               }}
             >
               <div className="mb-4">Your</div>
-              <div className="mb-4">CODEQUEST</div>
+              <div className="mb-4">AI Tutor</div>
               <div>Adventure</div>
             </h1>
             
@@ -140,7 +140,7 @@ const CodeQuestLanding = () => {
                 }}
               >
                 <div className="mb-4">Your</div>
-                <div className="mb-4">CODEQUEST</div>
+                <div className="mb-4">AI Tutor</div>
                 <div>Adventure</div>
               </h1>
             </div>
