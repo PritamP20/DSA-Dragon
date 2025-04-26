@@ -172,7 +172,6 @@ private checkNPCProximity() {
         }
     });
     
-    // Show/hide interaction prompt based on proximity
     if (nearNPC && nearestNPC) {
         this.interactionPrompt.setPosition(nearestNPC.x, nearestNPC.y - 50);
         this.interactionPrompt.setVisible(true);
@@ -293,8 +292,7 @@ private showNPCDialog(npc: NPC) {
   closeButton.on('pointerout', () => {
     closeButton.setFillStyle(0xFF4444); // Back to original red
   });
-  
-  // Add interactivity to continue button
+
   continueButton.on('pointerdown', () => {
     // Remove dialog
     closeDialog();
@@ -322,7 +320,6 @@ private showNPCDialog(npc: NPC) {
     const distY = Math.abs(this.player.y - initialNpcY);
     const distance = Math.sqrt(distX * distX + distY * distY);
     
-    // Close dialog if player moves more than 150 pixels away from initial NPC position
     if (distance > 150) {
       closeDialog();
     }
