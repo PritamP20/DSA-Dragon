@@ -67,8 +67,9 @@ export class LeetCodeQuestScene extends Phaser.Scene {
     private async loadQuestion(loadingText) {
         try {
             // Call the API to generate a question
+            console.log("Fetching from api")
             let questionJSON = await generateLeetCodeQuestion(this.topic, this.difficulty);
-            
+            console.log(questionJSON)
 
 
             if (questionJSON.includes("```")) {
